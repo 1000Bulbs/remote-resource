@@ -2,40 +2,6 @@
 require_once 'Requests/Requests.php';
 Requests::register_autoloader();
 
-class BasicRemoteResource {
-  private $client;
-
-  // GET
-  public static function get($path) {
-    return Requests::get($path, self::headers());
-  }
-
-  // POST
-  public static function post($path, $hash_of_attributes = array()) {
-    return Requests::post($path, $hash_of_attributes, self::headers());
-  }
-
-  // PATCH
-  public static function patch($path, $hash_of_attributes = array()) {
-    return Requests::patch($path, $hash_of_attributes, self::headers());
-  }
-
-  // DELETE
-  public static function delete($path) {
-    return Requests::delete($path, self::headers());
-  }
-
-  // SITE
-  public static function site() {
-    throw new Exception('Not implemented');
-  }
-
-  protected static function headers() {
-    $encoded = base64_encode("daniel:password"); // TODO: refactor
-    return array('Content-Type' => 'application/json', 'Authorization' => "Basic ".$encoded);
-  }
-}
-
 class RemoteResource extends BasicRemoteResource {
   public $id;
   public $hash_of_attributes = array();

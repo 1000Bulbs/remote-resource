@@ -1,5 +1,5 @@
 <?php
-require 'lib/adder.php';
+require 'lib/Adder.php';
 
 class AdderTest extends \Codeception\TestCase\Test
 {
