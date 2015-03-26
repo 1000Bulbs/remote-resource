@@ -5,3 +5,4 @@
 
 class_name: AdderTest
 class_name: BasicRemoteResourceTest
+class_name: RemoteResourceTest
