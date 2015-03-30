@@ -11,12 +11,12 @@ class BasicRemoteResource {
 
   // POST
   public static function post($path, $hash_of_attributes = array()) {
-    return Requests::post($path, $hash_of_attributes, self::headers());
+    return Requests::post($path, self::headers(), $hash_of_attributes);
   }
 
   // PATCH
   public static function patch($path, $hash_of_attributes = array()) {
-    return Requests::patch($path, $hash_of_attributes, self::headers());
+    return Requests::patch($path, self::headers(), $hash_of_attributes);
   }
 
   // DELETE
