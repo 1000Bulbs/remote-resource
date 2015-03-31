@@ -71,6 +71,34 @@ class ProductImageTest extends \Codeception\TestCase\Test
     $this->assertTrue($product_image->persisted());
   }
 
+  // DESTROY 204
+  public function testDestroy_204() {
+    $file = 'fixtures/cube.png';
+    $file_content_type = mime_content_type($file);
+    $file_data = base64_encode(file_get_contents($file));
+    $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
+
+    $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+
+    $product_image = ProductImage::create($attributes);
+
+    $result = $product_image->destroy();
+
+    // it destroys the product_image
+    $this->setExpectedException('RemoteResourceResourceNotFound');
+    ProductImage::find($product_image->id());
+  }
+
+  // DESTROY 404
+  public function testDestroy_404() {
+    $product_image = new ProductImage;
+
+    // it should throw a RemoteResourceResourceNotFound
+    $this->setExpectedException('RemoteResourceResourceNotFound');
+
+    $product_image->destroy();
+  }
+
   // FIND 404
   public function testFind_404() {
     // it should throw a RemoteResourceResourceNotFound

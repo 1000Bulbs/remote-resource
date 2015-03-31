@@ -11,7 +11,7 @@ class RemoteResource extends BasicRemoteResource {
 
   // GET index
   public static function all() {
-    return self::get( self::$site );
+    return self::get( static::$site );
   }
 
   // GET index w/ params
@@ -65,7 +65,7 @@ class RemoteResource extends BasicRemoteResource {
 
   // DELETE destroy
   public function destroy() {
-    return self::delete( self::$site."/".$this->id );
+    return self::delete( static::$site."/".$this->id );
   }
 
   // [ POST | PATCH ] save
