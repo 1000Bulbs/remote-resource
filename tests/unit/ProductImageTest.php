@@ -71,6 +71,45 @@ class ProductImageTest extends \Codeception\TestCase\Test
     $this->assertTrue($product_image->persisted());
   }
 
+  // FIND 404
+  public function testFind_404() {
+    // it should throw a RemoteResourceResourceNotFound
+    $this->setExpectedException('RemoteResourceResourceNotFound');
+
+    ProductImage::find(999);
+  }
+
+  // FIND 200
+  public function testFind_200() {
+    $file = 'fixtures/cube.png';
+    $file_content_type = mime_content_type($file);
+    $file_data = base64_encode(file_get_contents($file));
+    $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
+
+    $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+
+    $product_image_created = ProductImage::create($attributes);
+
+    $product_image_found = ProductImage::find($product_image_created->id());
+
+    // it shound return a ProductImage instance
+    $this->assertInstanceOf('ProductImage', $product_image_found);
+
+    // it should be flagged as persisted
+    $this->assertTrue($product_image_found->persisted());
+
+    // it should be valid
+    $this->assertTrue($product_image_found->valid());
+
+    // it should have _no_ errors
+    $this->assertEquals($product_image_found->errors(), array());
+
+    // it should have the same attributes as the previously created resource
+    $product_image_created_attributes = $product_image_created->attributes();
+    unset($product_image_created_attributes["file"]); // unset the temporary file attribute
+    $this->assertEquals($product_image_created_attributes, $product_image_found->attributes());
+  }
+
   // UPDATE 204
   public function testUpdateAttributes_204() {
     $file = 'fixtures/cube.png';

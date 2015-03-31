@@ -16,13 +16,19 @@ class RemoteResource extends BasicRemoteResource {
 
   // GET index w/ params
   public static function where($attributes = array()) {
-    return self::get( self::wherePath(self::$site, $attributes) );
-    //$body = json_decode( $response->body )->product_images; # TODO: refactor
+    return self::get( self::wherePath(static::$site, $attributes) );
   }
 
   // GET show
   public static function find($id) {
-    return self::get( self::$site."/".$id );
+    $response = self::get( static::$site."/".$id );
+
+    $product_image = new ProductImage;
+    $product_image->persisted = true;
+    $product_image->id = $response[static::$resource_name]["id"];
+    $product_image->attributes = $response[static::$resource_name];
+
+    return $product_image;
   }
 
   // POST create
