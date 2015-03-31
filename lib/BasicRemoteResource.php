@@ -11,21 +11,17 @@ class BasicRemoteResource {
 
   // POST
   public static function post($path, $hash_of_attributes = array()) {
-    return Requests::post($path, self::headers(), $hash_of_attributes);
+    return Requests::post($path, self::headers(), json_encode($hash_of_attributes));
   }
 
   // PATCH
   public static function patch($path, $hash_of_attributes = array()) {
-    return Requests::patch($path, self::headers(), $hash_of_attributes);
+    return Requests::patch($path, self::headers(), json_encode($hash_of_attributes));
   }
 
   // DELETE
   public static function delete($path) {
     return Requests::delete($path, self::headers());
-  }
-
-  public static function site() {
-    throw new Exception('Not implemented');
   }
 
   public static function headers() {

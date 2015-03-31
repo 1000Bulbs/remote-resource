@@ -5,3 +5,4 @@
 
 class_name: BasicRemoteResourceTest
 class_name: RemoteResourceTest
+class_name: ProductImageTest
