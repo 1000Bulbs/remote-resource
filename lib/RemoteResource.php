@@ -1,29 +1,6 @@
 <?php
 require_once 'lib/BasicRemoteResource.php';
 
-class RemoteResourceResponseConverger {
-  public $remote_resource;
-  public $remote_resource_response;
-
-  public function __construct(RemoteResource $remote_resource, $remote_resource_response) {
-    $this->remote_resource = $remote_resource;
-    $this->remote_resource_response = $remote_resource_response;
-  }
-
-  public function converge() {
-    // Add $is_valid, and $is_persisted, and $status_code, $id
-    // align $attributes
-    $body = json_decode( $this->remote_resource_response->body );
-    $status_code = $this->remote_resource_response->status_code;
-
-    $this->remote_resource->id = $body->id;
-    $this->remote_resource->attributes = $body;
-    $this->remote_resource->is_persisted = true;
-    // leverage status_code for validity...
-    return $body;
-  }
-}
-
 class RemoteResource extends BasicRemoteResource {
   public static $site, $resource_name;
   protected $id, $errors = array(), $persisted = false, $valid = false, $attributes;
@@ -57,9 +34,9 @@ class RemoteResource extends BasicRemoteResource {
       $product_image->persisted = true;
       $product_image->id = $response[static::$resource_name]["id"];
       $product_image->attributes = array_merge($product_image->attributes, $response[static::$resource_name]);
+      $product_image->errors = array();
     } catch ( RemoteResourceResourceInvalid $e ) {
       $product_image->errors = $e->response["errors"];
-      $product_image->persisted = false;
     }
 
     return $product_image;
@@ -75,12 +52,8 @@ class RemoteResource extends BasicRemoteResource {
 
   // update attributes
   public function updateAttributes($attributes) {
-    if (!$this->id) throw new Exception("ID not assigned");
-
-    $this->attributes = array_merge(
-      $this->attributes, $attributes
-    );
-
+    if (!$this->persisted) throw new Exception("Attempted update: RemoteResource not persisted");
+    $this->attributes = array_merge($this->attributes, $attributes);
     return $this->update();
   }
 
@@ -91,14 +64,14 @@ class RemoteResource extends BasicRemoteResource {
 
   // [ POST | PATCH ] save
   public function save() {
-    if ($this->id) {
-      return self::create($this->attributes);
-    } else {
+    if ($this->persisted) {
       return $this->update($this->attributes);
+    } else {
+      return self::create($this->attributes);
     }
   }
 
-  // getters
+  // getters & flags
   public function id()         { return $this->id;             }
   public function errors()     { return $this->errors;         }
   public function persisted()  { return $this->persisted;      }
@@ -111,12 +84,15 @@ class RemoteResource extends BasicRemoteResource {
 
   // PATCH update
   private function update() {
-    return self::patch( static::$site."/".$this->id, array( static::$resource_name => $this->attributes ) );
-  }
-
-  private static function converge($response) {
-    $converger = new RemoteResourceResponseConverger(self, $response);
-    return $converger->converge();
+    try {
+      $response = self::patch( static::$site."/".$this->id, array( static::$resource_name => $this->attributes ) );
+      $this->errors = array();
+      $updated = true;
+    } catch ( RemoteResourceResourceInvalid $e ) {
+      $this->errors = $e->response["errors"];
+      $updated = false;
+    }
+    return $updated;
   }
 
   private static function wherePath($path, $attributes) {

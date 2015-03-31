@@ -71,24 +71,94 @@ class ProductImageTest extends \Codeception\TestCase\Test
     $this->assertTrue($product_image->persisted());
   }
 
-  //public function testUpdateAttributes_204() {
-    // TODO: write this AFTER create and find have been tested
-  //}
+  // UPDATE 204
+  public function testUpdateAttributes_204() {
+    $file = 'fixtures/cube.png';
+    $file_content_type = mime_content_type($file);
+    $file_data = base64_encode(file_get_contents($file));
+    $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
 
-  //public function testUpdateAttributes_noId() {
-    //$product_image = new ProductImage;
+    $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    //$this->setExpectedException('NoIdAssignedException');
+    $product_image = ProductImage::create($attributes);
+    $attributes = $product_image->attributes();
+    $previous_name_value = $attributes["name"];
 
-    //$product_image->updateAttributes(array('product_id' => 15));
-  //}
+    $result = $product_image->updateAttributes(array('name' => 'new name'));
 
-  //public function testUpdateAttributes_404() {
-    //$product_image = new ProductImage;
-    //$product_image->id = 10;
+    // it should return _true_
+    $this->assertTrue($result);
 
-    //$result = $product_image->updateAttributes(array('product_id' => 15));
+    // it should have updated the updated attributes
+    $attributes = $product_image->attributes();
+    $this->assertEquals($attributes["name"], "new name");
+    $this->assertNotEquals($attributes["name"], $previous_name_value);
 
-    //$this->assertEquals( $result->status_code, 404 );
-  //}
+    // it should remain flagged as persisted
+    $this->assertTrue($product_image->persisted());
+
+    // it should be valid
+    $this->assertTrue($product_image->valid());
+
+    // it should _not_ have any errors
+    $this->assertEquals($product_image->errors(), array());
+  }
+
+  // UPDATE 500
+  public function testUpdateAttributes_500() {
+    $file = 'fixtures/cube.png';
+    $file_content_type = mime_content_type($file);
+    $file_data = base64_encode(file_get_contents($file));
+    $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
+
+    $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+
+    $product_image = ProductImage::create($attributes);
+
+    // it should throw a RemoteResourceServerError
+    $this->setExpectedException('RemoteResourceServerError');
+
+    $result = $product_image->updateAttributes(array('file' => 'file'));
+  }
+
+  // UPDATE not persisted
+  public function testUpdateAttributes_notPersisted() {
+    $product_image = new ProductImage;
+
+    $this->setExpectedException('Exception', 'Attempted update: RemoteResource not persisted');
+
+    $product_image->updateAttributes(array('product_id' => 15));
+  }
+
+  // UPDATE 422
+  public function testUpdateAttributes_422() {
+    $file = 'fixtures/cube.png';
+    $file_content_type = mime_content_type($file);
+    $file_data = base64_encode(file_get_contents($file));
+    $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
+
+    $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+
+    $product_image = ProductImage::create($attributes);
+
+    $string_too_long = 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
+    $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
+    $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
+    $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
+    $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
+
+    $result = $product_image->updateAttributes(array('name' => $string_too_long));
+
+    // it should return _false_
+    $this->assertFalse($result);
+
+    // it should have errors
+    $this->assertEquals($product_image->errors(), array('Name is too long (maximum is 255 characters)'));
+
+    // it should be invalid
+    $this->assertFalse($product_image->valid());
+
+    // it should still be listed as persisted
+    $this->assertTrue($product_image->persisted());
+  }
 }
