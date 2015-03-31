@@ -26,8 +26,7 @@ class RemoteResourceResponseConverger {
 
 class RemoteResource extends BasicRemoteResource {
   public static $site, $resource_name;
-  public $id, $valid, $persisted, $status_code, $errors = array(), $attributes;
-  public $raw;
+  protected $id, $errors = array(), $persisted = false, $valid = false, $attributes;
 
   // -------------------------
   // _____ CLASS METHODS _____
@@ -55,13 +54,11 @@ class RemoteResource extends BasicRemoteResource {
 
     try {
       $response = self::post( static::$site, array(static::$resource_name => $attributes) );
-      $product_image->valid = true;
       $product_image->persisted = true;
       $product_image->id = $response[static::$resource_name]["id"];
       $product_image->attributes = array_merge($product_image->attributes, $response[static::$resource_name]);
     } catch ( RemoteResourceResourceInvalid $e ) {
       $product_image->errors = $e->response["errors"];
-      $product_image->valid = false;
       $product_image->persisted = false;
     }
 
@@ -100,6 +97,13 @@ class RemoteResource extends BasicRemoteResource {
       return $this->update($this->attributes);
     }
   }
+
+  // getters
+  public function id()         { return $this->id;             }
+  public function errors()     { return $this->errors;         }
+  public function persisted()  { return $this->persisted;      }
+  public function valid()      { return empty($this->errors);  }
+  public function attributes() { return $this->attributes;     }
 
   // ----------------------------
   // _____ PRIVATE METHODS ______

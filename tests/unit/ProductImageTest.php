@@ -13,19 +13,19 @@ class ProductImageTest extends \Codeception\TestCase\Test
     $this->assertInstanceOf('ProductImage', $product_image);
 
     // it should _not_ have an id
-    $this->assertNull($product_image->id);
+    $this->assertNull($product_image->id());
 
     // it should have the attributes which have been passed in
-    $this->assertEquals($product_image->attributes, $attributes);
+    $this->assertEquals($product_image->attributes(), $attributes);
 
     // it should have an errors array
-    $this->assertEquals($product_image->errors, array("File can't be blank", "Product can't be blank"));
+    $this->assertEquals($product_image->errors(), array("File can't be blank", "Product can't be blank"));
 
     // it should be marked as invalid
-    $this->assertFalse($product_image->valid);
+    $this->assertFalse($product_image->valid());
 
     // it should be marked as not persisted
-    $this->assertFalse($product_image->persisted);
+    $this->assertFalse($product_image->persisted());
   }
 
   // CREATE 500
@@ -53,21 +53,22 @@ class ProductImageTest extends \Codeception\TestCase\Test
     $this->assertInstanceOf('ProductImage', $product_image);
 
     // it should have an id
-    $this->assertNotNull($product_image->id);
+    $this->assertNotNull($product_image->id());
 
     // it should have attributes returned from the remote resource
-    $this->assertNotEquals($product_image->attributes, $attributes);
-    $this->assertNotNull($product_image->attributes["id"]);
-    $this->assertNotNull($product_image->attributes["sizes_and_urls"]);
+    $this->assertNotEquals($product_image->attributes(), $attributes);
+    $attributes = $product_image->attributes();
+    $this->assertNotNull($attributes["id"]);
+    $this->assertNotNull($attributes["sizes_and_urls"]);
 
     // it should _not_ have any errors
-    $this->assertEquals($product_image->errors, array());
+    $this->assertEquals($product_image->errors(), array());
 
     // it should be marked as valid
-    $this->assertTrue($product_image->valid);
+    $this->assertTrue($product_image->valid());
 
     // it should be marked as persisted
-    $this->assertTrue($product_image->persisted);
+    $this->assertTrue($product_image->persisted());
   }
 
   //public function testUpdateAttributes_204() {
