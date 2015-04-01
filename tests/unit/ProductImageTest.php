@@ -57,9 +57,8 @@ class ProductImageTest extends \Codeception\TestCase\Test
 
     // it should have attributes returned from the remote resource
     $this->assertNotEquals($product_image->attributes(), $attributes);
-    $attributes = $product_image->attributes();
-    $this->assertNotNull($attributes["id"]);
-    $this->assertNotNull($attributes["sizes_and_urls"]);
+    $this->assertNotNull($product_image->id);
+    $this->assertNotNull($product_image->sizes_and_urls);
 
     // it should _not_ have any errors
     $this->assertEquals($product_image->errors(), array());
@@ -69,6 +68,22 @@ class ProductImageTest extends \Codeception\TestCase\Test
 
     // it should be marked as persisted
     $this->assertTrue($product_image->persisted());
+  }
+
+  // SAVE CREATE
+  public function testSave_create() {
+    $product_image = new ProductImage;
+    $product_image->name = "cool image";
+  }
+
+  // SAVE UPDATE
+
+  // ALL 200
+  public function testAll_200() {
+    $product_images = ProductImage::all();
+
+    // it should return a RemoteResourceCollection instance
+    $this->assertInstanceOf('RemoteResourceCollection', $product_images);
   }
 
   // WHERE 200
@@ -89,8 +104,7 @@ class ProductImageTest extends \Codeception\TestCase\Test
     $this->assertTrue($product_image_sample->persisted());
 
     // the product_id matches the product_id searched against
-    $attributes = $product_image_sample->attributes();
-    $this->assertEquals($attributes["product_id"], 15);
+    $this->assertEquals($product_image_sample->product_id, 15);
   }
 
   // WHERE noMatches

@@ -54,6 +54,14 @@ class RemoteResource extends BasicRemoteResource {
     $this->attributes = $attributes;
   }
 
+  public function __get($attribute) {
+    return $this->attributes[$attribute];
+  }
+
+  public function __set($attribute, $value) {
+    $this->attributes[$attribute] = $value;
+  }
+
   // update attributes
   public function updateAttributes($attributes) {
     if (!$this->persisted) throw new Exception("Attempted update: RemoteResource not persisted");
