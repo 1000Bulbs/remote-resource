@@ -1,6 +1,19 @@
 <?php
 require_once 'lib/BasicRemoteResource.php';
 
+class RemoteResourceBuilder {
+  public static function build($resource, $response) {
+    $resource_class = get_class($resource);
+
+    $resource->setPersisted(true);
+    $resource->setId($response[$resource_class::$resource_name]["id"]);
+    $resource->setAttributes(array_merge($resource->attributes(), $response[$resource_class::$resource_name]));
+    $resource->setErrors(array());
+
+    return $resource;
+  }
+}
+
 class RemoteResource extends BasicRemoteResource {
   public static $site, $resource_name;
   protected $id, $errors = array(), $persisted = false, $valid = false, $attributes;
@@ -22,26 +35,18 @@ class RemoteResource extends BasicRemoteResource {
   // GET show
   public static function find($id) {
     $response = self::get( static::$site."/".$id );
-
-    $resource = new static;
-    $resource->persisted = true;
-    $resource->id = $response[static::$resource_name]["id"];
-    $resource->attributes = $response[static::$resource_name];
-
+    $resource = RemoteResourceBuilder::build(new static, $response);
     return $resource;
   }
 
   // POST create
   public static function create($attributes) {
-    $resource = new static($attributes);
 
     try {
       $response = self::post( static::$site, array(static::$resource_name => $attributes) );
-      $resource->persisted = true;
-      $resource->id = $response[static::$resource_name]["id"];
-      $resource->attributes = array_merge($resource->attributes, $response[static::$resource_name]);
-      $resource->errors = array();
+      $resource = RemoteResourceBuilder::build(new static, $response);
     } catch ( RemoteResourceResourceInvalid $e ) {
+      $resource = new static($attributes);
       $resource->errors = $e->response["errors"];
     }
 
@@ -77,12 +82,18 @@ class RemoteResource extends BasicRemoteResource {
     }
   }
 
-  // getters & flags
+  // getters
   public function id()         { return $this->id;             }
   public function errors()     { return $this->errors;         }
   public function persisted()  { return $this->persisted;      }
   public function valid()      { return empty($this->errors);  }
   public function attributes() { return $this->attributes;     }
+
+  // setters
+  public function setId($id)                 { $this->id = $id;                 }
+  public function setErrors($errors)         { $this->errors = $errors;         }
+  public function setPersisted($persisted)   { $this->persisted = $persisted;   }
+  public function setAttributes($attributes) { $this->attributes = $attributes; }
 
   // ----------------------------
   // _____ PRIVATE METHODS ______
