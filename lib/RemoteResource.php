@@ -77,9 +77,9 @@ class RemoteResource extends BasicRemoteResource {
   // [ POST | PATCH ] save
   public function save() {
     if ($this->persisted) {
-      return $this->update($this->attributes);
+      return $this->update();
     } else {
-      return self::create($this->attributes);
+      return $this->instanceCreate();
     }
   }
 
@@ -99,6 +99,13 @@ class RemoteResource extends BasicRemoteResource {
   // ----------------------------
   // _____ PRIVATE METHODS ______
   // ____________________________
+
+  // POST create
+  private function instanceCreate() {
+    $resource_to_merge = self::create($this->attributes);
+    RemoteResourceBuilder::merge($this, $resource_to_merge);
+    return $this->valid() ? true : false;
+  }
 
   // PATCH update
   private function update() {

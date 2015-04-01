@@ -70,13 +70,119 @@ class ProductImageTest extends \Codeception\TestCase\Test
     $this->assertTrue($product_image->persisted());
   }
 
-  // SAVE CREATE
-  public function testSave_create() {
+  // SAVE CREATE 422
+  public function testSave_create_422() {
     $product_image = new ProductImage;
+
     $product_image->name = "cool image";
+    $product_image->product_id = 15;
+
+    $product_image->save();
+
+    // the product image should not be valid
+    $this->assertFalse($product_image->valid());
+
+    // the product image should not be persisted
+    $this->assertFalse($product_image->persisted());
+
+    // the product image should have errors
+    $this->assertEquals($product_image->errors(), array("File can't be blank"));
   }
 
-  // SAVE UPDATE
+  // SAVE CREATE 201
+  public function testSave_create_201() {
+    $file = 'fixtures/cube.png';
+    $file_content_type = mime_content_type($file);
+    $file_data = base64_encode(file_get_contents($file));
+    $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
+
+    $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+
+    $product_image = new ProductImage;
+
+    $product_image->product_id = 15;
+    $product_image->file = $file_data_uri;
+
+    $product_image->save();
+
+    // the product image should be valid
+    $this->assertTrue($product_image->valid());
+
+    // the product image should be persisted
+    $this->assertTrue($product_image->persisted());
+
+    // the product image should have attributes returned from the remote resource
+    $this->assertNotNull($product_image->sizes_and_urls);
+  }
+
+  // SAVE UPDATE 422
+  public function testSave_update_422() {
+    $file = 'fixtures/cube.png';
+    $file_content_type = mime_content_type($file);
+    $file_data = base64_encode(file_get_contents($file));
+    $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
+
+    $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+
+    $product_image = new ProductImage;
+
+    $product_image->product_id = 15;
+    $product_image->file = $file_data_uri;
+
+    $product_image->save(); // created
+
+    $string_too_long = 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
+    $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
+    $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
+    $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
+    $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
+
+    $product_image->name = $string_too_long;
+
+    $product_image->save(); // updated
+
+    // the product image should not be valid
+    $this->assertFalse($product_image->valid());
+
+    // the product image should be persisted
+    $this->assertTrue($product_image->persisted());
+
+    // the product image should have errors
+    $this->assertEquals($product_image->errors(), array("Name is too long (maximum is 255 characters)"));
+  }
+
+  // SAVE UPDATE 204
+  public function testSave_update_204() {
+    $file = 'fixtures/cube.png';
+    $file_content_type = mime_content_type($file);
+    $file_data = base64_encode(file_get_contents($file));
+    $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
+
+    $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+
+    $product_image = new ProductImage;
+
+    $product_image->product_id = 15;
+    $product_image->file = $file_data_uri;
+
+    $product_image->save(); // created
+
+    $product_image->name = 'cool new name';
+
+    $product_image->save(); // updated
+
+    // the product image should be valid
+    $this->assertTrue($product_image->valid());
+
+    // the product image should be persisted
+    $this->assertTrue($product_image->persisted());
+
+    // the product image should _not_ have errors
+    $this->assertEquals($product_image->errors(), array());
+
+    // the product image should have updated attributes
+    $this->assertEquals($product_image->name, 'cool new name');
+  }
 
   // ALL 200
   public function testAll_200() {
