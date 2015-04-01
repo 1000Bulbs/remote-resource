@@ -40,7 +40,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // CREATE 201
   public function testCreate_201() {
-    $file = 'fixtures/cube.png';
+    $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
     $file_data = base64_encode(file_get_contents($file));
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
@@ -91,7 +91,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // SAVE CREATE 201
   public function testSave_create_201() {
-    $file = 'fixtures/cube.png';
+    $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
     $file_data = base64_encode(file_get_contents($file));
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
@@ -117,7 +117,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // SAVE UPDATE 422
   public function testSave_update_422() {
-    $file = 'fixtures/cube.png';
+    $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
     $file_data = base64_encode(file_get_contents($file));
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
@@ -153,7 +153,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // SAVE UPDATE 204
   public function testSave_update_204() {
-    $file = 'fixtures/cube.png';
+    $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
     $file_data = base64_encode(file_get_contents($file));
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
@@ -226,7 +226,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // DESTROY 204
   public function testDestroy_204() {
-    $file = 'fixtures/cube.png';
+    $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
     $file_data = base64_encode(file_get_contents($file));
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
@@ -262,7 +262,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // FIND 200
   public function testFind_200() {
-    $file = 'fixtures/cube.png';
+    $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
     $file_data = base64_encode(file_get_contents($file));
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
@@ -293,7 +293,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // UPDATE 204
   public function testUpdateAttributes_204() {
-    $file = 'fixtures/cube.png';
+    $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
     $file_data = base64_encode(file_get_contents($file));
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
@@ -326,7 +326,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // UPDATE 500
   public function testUpdateAttributes_500() {
-    $file = 'fixtures/cube.png';
+    $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
     $file_data = base64_encode(file_get_contents($file));
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
@@ -352,7 +352,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // UPDATE 422
   public function testUpdateAttributes_422() {
-    $file = 'fixtures/cube.png';
+    $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
     $file_data = base64_encode(file_get_contents($file));
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
