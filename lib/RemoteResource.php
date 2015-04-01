@@ -71,7 +71,7 @@ class RemoteResource extends BasicRemoteResource {
 
   // DELETE destroy
   public function destroy() {
-    return self::delete( static::$site."/".$this->id );
+    self::delete( static::$site."/".$this->id );
   }
 
   // [ POST | PATCH ] save
