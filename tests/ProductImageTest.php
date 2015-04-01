@@ -1,5 +1,5 @@
 <?php
-require_once 'lib/ProductImage.php';
+require_once 'src/ProductImage.php';
 
 class ProductImageTest extends PHPUnit_Framework_TestCase
 {

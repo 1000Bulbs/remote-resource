@@ -1,7 +1,7 @@
 <?php
-require_once 'lib/BasicRemoteResource.php';
-require_once 'lib/RemoteResourceBuilder.php';
-require_once 'lib/RemoteResourceCollection.php';
+require_once 'src/BasicRemoteResource.php';
+require_once 'src/RemoteResourceBuilder.php';
+require_once 'src/RemoteResourceCollection.php';
 
 class RemoteResource extends BasicRemoteResource {
   public static $site, $resource_name;

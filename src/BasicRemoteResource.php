@@ -1,7 +1,7 @@
 <?php
 require_once 'Requests/Requests.php';
-require_once 'lib/RemoteResourceException.php';
-require_once 'lib/RemoteResourceConfig.php';
+require_once 'src/RemoteResourceException.php';
+require_once 'src/RemoteResourceConfig.php';
 Requests::register_autoloader();
 
 class BasicRemoteResource {

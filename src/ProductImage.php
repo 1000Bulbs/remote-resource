@@ -1,5 +1,5 @@
 <?php
-require_once 'lib/RemoteResource.php';
+require_once 'src/RemoteResource.php';
 
 class ProductImage extends RemoteResource {
   public static $site                 = "http://localhost:3000/api/product_images";

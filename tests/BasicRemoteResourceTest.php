@@ -1,5 +1,5 @@
 <?php
-require_once 'lib/BasicRemoteResource.php';
+require_once 'src/BasicRemoteResource.php';
 
 class BasicRemoteResourceTest extends PHPUnit_Framework_TestCase
 {

@@ -1,5 +1,5 @@
 <?php
-require_once 'lib/RemoteResourceBuilder.php';
+require_once 'src/RemoteResourceBuilder.php';
 
 class RemoteResourceCollection implements Iterator {
   private $_collection = array();
