@@ -71,6 +71,39 @@ class ProductImageTest extends \Codeception\TestCase\Test
     $this->assertTrue($product_image->persisted());
   }
 
+  // WHERE 200
+  public function testWhere_200() {
+    $product_images = ProductImage::where(array('product_id' => 15));
+
+    // it should return a RemoteResourceCollection instance
+    $this->assertInstanceOf('RemoteResourceCollection', $product_images);
+
+    // the RemoteResourceCollection should contain ProductImage instances
+    $this->assertInstanceOf('ProductImage', $product_images->first());
+    $this->assertInstanceOf('ProductImage', $product_images->last());
+
+    // the ProductImage instances are properly formatted
+    $product_image_sample = $product_images->first();
+    $this->assertNotNull($product_image_sample->id());
+    $this->assertTrue($product_image_sample->valid());
+    $this->assertTrue($product_image_sample->persisted());
+
+    // the product_id matches the product_id searched against
+    $attributes = $product_image_sample->attributes();
+    $this->assertEquals($attributes["product_id"], 15);
+  }
+
+  // WHERE noMatches
+  public function testWhere_noMatches() {
+    $product_images = ProductImage::where(array());
+
+    // it should return a RemoteResourceCollection instance
+    $this->assertInstanceOf('RemoteResourceCollection', $product_images);
+
+    // it should have a count of zero
+    $this->assertEquals($product_images->count(), 0);
+  }
+
   // DESTROY 204
   public function testDestroy_204() {
     $file = 'fixtures/cube.png';

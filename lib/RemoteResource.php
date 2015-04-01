@@ -1,18 +1,7 @@
 <?php
 require_once 'lib/BasicRemoteResource.php';
-
-class RemoteResourceBuilder {
-  public static function build($resource, $response) {
-    $resource_class = get_class($resource);
-
-    $resource->setPersisted(true);
-    $resource->setId($response[$resource_class::$resource_name]["id"]);
-    $resource->setAttributes(array_merge($resource->attributes(), $response[$resource_class::$resource_name]));
-    $resource->setErrors(array());
-
-    return $resource;
-  }
-}
+require_once 'lib/RemoteResourceBuilder.php';
+require_once 'lib/RemoteResourceCollection.php';
 
 class RemoteResource extends BasicRemoteResource {
   public static $site, $resource_name;
@@ -24,12 +13,16 @@ class RemoteResource extends BasicRemoteResource {
 
   // GET index
   public static function all() {
-    return self::get( static::$site );
+    $response = self::get( static::$site );
+    $remote_resource_collection = new RemoteResourceCollection(new static, $response);
+    return $remote_resource_collection;
   }
 
   // GET index w/ params
   public static function where($attributes = array()) {
-    return self::get( self::wherePath(static::$site, $attributes) );
+    $response = self::get( self::wherePath(static::$site, $attributes) );
+    $remote_resource_collection = new RemoteResourceCollection(new static, $response);
+    return $remote_resource_collection;
   }
 
   // GET show
