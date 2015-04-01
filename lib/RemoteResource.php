@@ -23,29 +23,29 @@ class RemoteResource extends BasicRemoteResource {
   public static function find($id) {
     $response = self::get( static::$site."/".$id );
 
-    $product_image = new ProductImage;
-    $product_image->persisted = true;
-    $product_image->id = $response[static::$resource_name]["id"];
-    $product_image->attributes = $response[static::$resource_name];
+    $resource = new static;
+    $resource->persisted = true;
+    $resource->id = $response[static::$resource_name]["id"];
+    $resource->attributes = $response[static::$resource_name];
 
-    return $product_image;
+    return $resource;
   }
 
   // POST create
   public static function create($attributes) {
-    $product_image = new ProductImage($attributes);
+    $resource = new static($attributes);
 
     try {
       $response = self::post( static::$site, array(static::$resource_name => $attributes) );
-      $product_image->persisted = true;
-      $product_image->id = $response[static::$resource_name]["id"];
-      $product_image->attributes = array_merge($product_image->attributes, $response[static::$resource_name]);
-      $product_image->errors = array();
+      $resource->persisted = true;
+      $resource->id = $response[static::$resource_name]["id"];
+      $resource->attributes = array_merge($resource->attributes, $response[static::$resource_name]);
+      $resource->errors = array();
     } catch ( RemoteResourceResourceInvalid $e ) {
-      $product_image->errors = $e->response["errors"];
+      $resource->errors = $e->response["errors"];
     }
 
-    return $product_image;
+    return $resource;
   }
 
   // ----------------------------
