@@ -122,7 +122,7 @@ destroy   DELETE /remote_resource_path/:id     204           nil
 ```
 
 ### Exceptions
-Familiarized yourself with RemoteResource Exceptions. __Exceptions are evaluated in the order presented here.__
+Familiarize yourself with RemoteResource Exceptions. __Exceptions are evaluated in the order presented here.__
 
 ```
 status_code         exception
