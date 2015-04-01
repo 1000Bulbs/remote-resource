@@ -1,7 +1,7 @@
 <?php
 require_once 'lib/BasicRemoteResource.php';
 
-class BasicRemoteResourceTest extends \Codeception\TestCase\Test
+class BasicRemoteResourceTest extends PHPUnit_Framework_TestCase
 {
   public function testHeaders()
   {

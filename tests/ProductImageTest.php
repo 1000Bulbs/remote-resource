@@ -1,7 +1,7 @@
 <?php
 require_once 'lib/ProductImage.php';
 
-class ProductImageTest extends \Codeception\TestCase\Test
+class ProductImageTest extends PHPUnit_Framework_TestCase
 {
   // CREATE 422
   public function testCreate_422() {
