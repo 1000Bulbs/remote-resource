@@ -167,7 +167,7 @@ A RemoteResourceCollection is a collection of RemoteResource objects. The Remote
 $remote_resource_collection = ProductImage::all();
 
 foreach($remote_resource_collection as $remote_resource) {
-  echo class_name( $remote_resource ); // "RemoteResource"
+  echo get_class( $remote_resource ); // "RemoteResource"
 }
 ```
 
