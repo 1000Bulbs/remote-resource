@@ -1,11 +1,10 @@
 <?php
 require_once 'Requests/Requests.php';
 require_once 'lib/RemoteResourceException.php';
+require_once 'lib/RemoteResourceConfig.php';
 Requests::register_autoloader();
 
 class BasicRemoteResource {
-  private static $credentials;
-
   // GET
   public static function get($path) {
     return self::handleResponse(Requests::get($path, self::headers()));
@@ -27,19 +26,12 @@ class BasicRemoteResource {
   }
 
   public static function headers() {
-    $encoded = base64_encode(self::credentials());
+    $credentials = RemoteResourceConfig::base64EncodedCredentials();
+
     return array(
       'Content-Type' => 'application/json',
-      'Authorization' => 'Basic '.$encoded
+      'Authorization' => 'Basic '.$credentials
     );
-  }
-
-  public static function setCredentials($credentials) {
-    self::$credentials = $credentials;
-  }
-
-  private static function credentials() {
-    return self::$credentials;
   }
 
   private static function handleResponse($response) {

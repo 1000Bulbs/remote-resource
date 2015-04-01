@@ -5,8 +5,9 @@ class BasicRemoteResourceTest extends \Codeception\TestCase\Test
 {
   public function testHeaders()
   {
+    // set credentials in remote resource configuration
     $credentials = 'user:password';
-    BasicRemoteResource::setCredentials($credentials);
+    RemoteResourceConfig::setCredentials($credentials);
 
     $subject = new BasicRemoteResource();
 
