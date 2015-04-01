@@ -4,6 +4,7 @@ require_once 'lib/RemoteResourceException.php';
 Requests::register_autoloader();
 
 class BasicRemoteResource {
+  private static $credentials;
 
   // GET
   public static function get($path) {
@@ -25,12 +26,20 @@ class BasicRemoteResource {
     return self::handleResponse(Requests::delete($path, self::headers()));
   }
 
-  public static function headers() { // probably make protected or private
-    $encoded = base64_encode('user:password'); # TODO: refactor
+  public static function headers() {
+    $encoded = base64_encode(self::credentials());
     return array(
       'Content-Type' => 'application/json',
       'Authorization' => 'Basic '.$encoded
     );
+  }
+
+  public static function setCredentials($credentials) {
+    self::$credentials = $credentials;
+  }
+
+  private static function credentials() {
+    return self::$credentials;
   }
 
   private static function handleResponse($response) {

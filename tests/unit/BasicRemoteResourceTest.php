@@ -5,6 +5,9 @@ class BasicRemoteResourceTest extends \Codeception\TestCase\Test
 {
   public function testHeaders()
   {
+    $credentials = 'user:password';
+    BasicRemoteResource::setCredentials($credentials);
+
     $subject = new BasicRemoteResource();
 
     $this->assertEquals(
