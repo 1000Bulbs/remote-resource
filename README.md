@@ -193,30 +193,29 @@ array              delete    ( $path )
 ```
 
 ```
+// requests GET "http://example.com/product_images/5/clone/"
 ProductImage::get("5/clone");
 ```
-requests GET "http://example.com/product_images/5/clone/"
 
 ```
+// requests POST "http://example.com/product_images/5/clone/"
 ProductImage::post("5/clone", array("clone_to" => 15));
 ```
-requests POST "http://example.com/product_images/5/clone/"
 
 ```
+// requests PATCH "http://example.com/product_images/12/increment/"
 $product_image->patch("increment");
 ```
-requests PATCH "http://example.com/product_images/12/increment/"
 
 ```
+// requests DELETE "http://example.com/product_images/12/associated/"
 $product_image->delete("associated");
 ```
-requests DELETE "http://example.com/product_images/12/associated/"
 
 ### Changelog
 View the [CHANGELOG.md](CHANGELOG.md "CHANGELOG.md")
 
 ### TODO
-- Custom API Actions
 - Pre-recorded Tests ( PHP VCR )
 - bootstrapping for src/RemoteResource
 - more tests for Connection
