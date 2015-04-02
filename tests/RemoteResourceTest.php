@@ -1,16 +1,20 @@
 <?php
-use RemoteResource\ProductImage;
+class ProductImage extends RemoteResource\RemoteResource {
+  public static $site                 = "http://localhost:3000/api/product_images";
+  public static $resource_name        = "product_image";
+  public static $plural_resource_name = "product_images";
+}
 
-class ProductImageTest extends PHPUnit_Framework_TestCase
+class RemoteResourceTest extends PHPUnit_Framework_TestCase
 {
   // CREATE 422
   public function testCreate_422() {
     $attributes = array('name' => 'foo');
 
-    $product_image = RemoteResource\ProductImage::create($attributes);
+    $product_image = ProductImage::create($attributes);
 
     // it should return a ProductImage instance
-    $this->assertInstanceOf('RemoteResource\ProductImage', $product_image);
+    $this->assertInstanceOf('ProductImage', $product_image);
 
     // it should _not_ have an id
     $this->assertNull($product_image->id());
@@ -35,7 +39,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
     // it should throw a RemoteResourceServerError
     $this->setExpectedException('RemoteResource\Exception\ServerError');
 
-    $product_image = RemoteResource\ProductImage::create($attributes);
+    $product_image = ProductImage::create($attributes);
   }
 
   // CREATE 201
@@ -47,10 +51,10 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = RemoteResource\ProductImage::create($attributes);
+    $product_image = ProductImage::create($attributes);
 
     // it should return a ProductImage instance
-    $this->assertInstanceOf('RemoteResource\ProductImage', $product_image);
+    $this->assertInstanceOf('ProductImage', $product_image);
 
     // it should have an id
     $this->assertNotNull($product_image->id());
@@ -72,7 +76,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // SAVE CREATE 422
   public function testSave_create_422() {
-    $product_image = new RemoteResource\ProductImage;
+    $product_image = new ProductImage;
 
     $product_image->name = "cool image";
     $product_image->product_id = 15;
@@ -98,7 +102,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = new RemoteResource\ProductImage;
+    $product_image = new ProductImage;
 
     $product_image->product_id = 15;
     $product_image->file = $file_data_uri;
@@ -124,7 +128,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = new RemoteResource\ProductImage;
+    $product_image = new ProductImage;
 
     $product_image->product_id = 15;
     $product_image->file = $file_data_uri;
@@ -160,7 +164,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = new RemoteResource\ProductImage;
+    $product_image = new ProductImage;
 
     $product_image->product_id = 15;
     $product_image->file = $file_data_uri;
@@ -186,7 +190,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // ALL 200
   public function testAll_200() {
-    $product_images = RemoteResource\ProductImage::all();
+    $product_images = ProductImage::all();
 
     // it should return a RemoteResource\Collection instance
     $this->assertInstanceOf('RemoteResource\Collection', $product_images);
@@ -194,14 +198,14 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // WHERE 200
   public function testWhere_200() {
-    $product_images = RemoteResource\ProductImage::where(array('product_id' => 15));
+    $product_images = ProductImage::where(array('product_id' => 15));
 
     // it should return a RemoteResource\Collection instance
     $this->assertInstanceOf('RemoteResource\Collection', $product_images);
 
     // the RemoteResource\Collection should contain ProductImage instances
-    $this->assertInstanceOf('RemoteResource\ProductImage', $product_images->first());
-    $this->assertInstanceOf('RemoteResource\ProductImage', $product_images->last());
+    $this->assertInstanceOf('ProductImage', $product_images->first());
+    $this->assertInstanceOf('ProductImage', $product_images->last());
 
     // the ProductImage instances are properly formatted
     $product_image_sample = $product_images->first();
@@ -215,7 +219,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // WHERE noMatches
   public function testWhere_noMatches() {
-    $product_images = RemoteResource\ProductImage::where(array());
+    $product_images = ProductImage::where(array());
 
     // it should return a RemoteResource\Collection instance
     $this->assertInstanceOf('RemoteResource\Collection', $product_images);
@@ -233,18 +237,18 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = RemoteResource\ProductImage::create($attributes);
+    $product_image = ProductImage::create($attributes);
 
     $result = $product_image->destroy();
 
     // it destroys the product_image
     $this->setExpectedException('RemoteResource\Exception\ResourceNotFound');
-    RemoteResource\ProductImage::find($product_image->id());
+    ProductImage::find($product_image->id());
   }
 
   // DESTROY 404
   public function testDestroy_404() {
-    $product_image = new RemoteResource\ProductImage;
+    $product_image = new ProductImage;
 
     // it should throw a RemoteResourceResourceNotFound
     $this->setExpectedException('RemoteResource\Exception\ResourceNotFound');
@@ -257,7 +261,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
     // it should throw a RemoteResourceResourceNotFound
     $this->setExpectedException('RemoteResource\Exception\ResourceNotFound');
 
-    RemoteResource\ProductImage::find(9999);
+    ProductImage::find(9999);
   }
 
   // FIND 200
@@ -272,12 +276,12 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image_created = RemoteResource\ProductImage::create($attributes);
+    $product_image_created = ProductImage::create($attributes);
 
-    $product_image_found = RemoteResource\ProductImage::find($product_image_created->id());
+    $product_image_found = ProductImage::find($product_image_created->id());
 
     // it shound return a ProductImage instance
-    $this->assertInstanceOf('RemoteResource\ProductImage', $product_image_found);
+    $this->assertInstanceOf('ProductImage', $product_image_found);
 
     // it should be flagged as persisted
     $this->assertTrue($product_image_found->persisted());
@@ -303,7 +307,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = RemoteResource\ProductImage::create($attributes);
+    $product_image = ProductImage::create($attributes);
     $attributes = $product_image->attributes();
     $previous_name_value = $attributes["name"];
 
@@ -336,7 +340,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = RemoteResource\ProductImage::create($attributes);
+    $product_image = ProductImage::create($attributes);
 
     // it should throw a RemoteResourceServerError
     $this->setExpectedException('RemoteResource\Exception\ServerError');
@@ -346,7 +350,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // UPDATE not persisted
   public function testUpdateAttributes_notPersisted() {
-    $product_image = new RemoteResource\ProductImage;
+    $product_image = new ProductImage;
 
     $this->setExpectedException('Exception', 'Attempted update: RemoteResource not persisted');
 
@@ -362,7 +366,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = RemoteResource\ProductImage::create($attributes);
+    $product_image = ProductImage::create($attributes);
 
     $string_too_long = 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
     $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
