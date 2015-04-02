@@ -1,6 +1,7 @@
 {
+  "name": "RemoteResource",
   "require": {
-    "rmccue/requests": ">=1.0"
+    "guzzlehttp/guzzle": "3.7.3"
   },
   "require-dev": {
     "phpunit/phpunit": "4.5.*"

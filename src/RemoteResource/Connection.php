@@ -15,25 +15,34 @@ use RemoteResource\Exception\ClientError;
 use RemoteResource\Exception\ServerError;
 use RemoteResource\Exception\ConnectionError;
 
+use Guzzle\Http\Client;
+
 class Connection {
+  // Create a guzzle client
+  public static function client() {
+    $client = new Client();
+    $client->setDefaultOption('exceptions', false);
+    return $client;
+  }
+
   // GET
   public static function get($path) {
-    return self::handleResponse(\Requests::get($path, self::headers()));
+    return self::handleResponse(self::client()->get($path, self::headers())->send());
   }
 
   // POST
   public static function post($path, $attributes = array()) {
-    return self::handleResponse(\Requests::post($path, self::headers(), json_encode($attributes)));
+    return self::handleResponse(self::client()->post($path, self::headers(), json_encode($attributes))->send());
   }
 
   // PATCH
   public static function patch($path, $attributes = array()) {
-    return self::handleResponse(\Requests::patch($path, self::headers(), json_encode($attributes)));
+    return self::handleResponse(self::client()->patch($path, self::headers(), json_encode($attributes))->send());
   }
 
   // DELETE
   public static function delete($path) {
-    return self::handleResponse(\Requests::delete($path, self::headers()));
+    return self::handleResponse(self::client()->delete($path, self::headers())->send());
   }
 
   public static function headers() {
@@ -46,39 +55,39 @@ class Connection {
   }
 
   private static function handleResponse($response) {
-    $decoded_body = json_decode( $response->body, true );
+    $decoded_body = json_decode( $response->getBody(), true );
 
-    if ($response->status_code >= 200 && $response->status_code < 400) {
+    if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 400) {
       return $decoded_body;
 
-    } elseif ($response->status_code == 400) {
+    } elseif ($response->getStatusCode() == 400) {
       throw new Exception\BadRequest($decoded_body);
 
-    } elseif ($response->status_code == 401) {
+    } elseif ($response->getStatusCode() == 401) {
       throw new Exception\UnauthorizedAccess($decoded_body);
 
-    } elseif ($response->status_code == 403) {
+    } elseif ($response->getStatusCode() == 403) {
       throw new Exception\ForbiddenAccess($decoded_body);
 
-    } elseif ($response->status_code == 404) {
+    } elseif ($response->getStatusCode() == 404) {
       throw new Exception\ResourceNotFound($decoded_body);
 
-    } elseif ($response->status_code == 405) {
+    } elseif ($response->getStatusCode() == 405) {
       throw new Exception\MethodNotAllowed($decoded_body);
 
-    } elseif ($response->status_code == 409) {
+    } elseif ($response->getStatusCode() == 409) {
       throw new Exception\ResourceConflict($decoded_body);
 
-    } elseif ($response->status_code == 410) {
+    } elseif ($response->getStatusCode() == 410) {
       throw new Exception\ResourceGone($decoded_body);
 
-    } elseif ($response->status_code == 422) {
+    } elseif ($response->getStatusCode() == 422) {
       throw new Exception\ResourceInvalid($decoded_body);
 
-    } elseif ($response->status_code >= 401 && $response->status_code < 500) {
+    } elseif ($response->getStatusCode() >= 401 && $response->getStatusCode() < 500) {
       throw new Exception\ClientError($decoded_body);
 
-    } elseif ($response->status_code >= 500 && $response->status_code < 600) {
+    } elseif ($response->getStatusCode() >= 500 && $response->getStatusCode() < 600) {
       throw new Exception\ServerError($decoded_body);
 
     } else {
