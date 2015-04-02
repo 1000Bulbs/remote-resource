@@ -20,4 +20,7 @@ class ConnectionTest extends PHPUnit_Framework_TestCase
       )
     );
   }
+
+  public function testGet_400() {
+  }
 }

@@ -14,13 +14,13 @@ use RemoteResource\Exception\ResourceInvalid;
 use RemoteResource\Exception\ClientError;
 use RemoteResource\Exception\ServerError;
 use RemoteResource\Exception\ConnectionError;
+use RemoteResource\Connection\Header;
 
 use Guzzle\Http\Client;
 
 class Connection {
-  private $client;
+  private $client, $header;
 
-  // Create a guzzle client
   public function client() {
     if (!$this->client) {
       $client = new Client;
@@ -31,34 +31,39 @@ class Connection {
     return $this->client;
   }
 
-  // GET
   public function get($path) {
-    return $this->handleResponse($this->client()->get($path, $this->headers())->send());
+    return $this->sendRequest( 'GET', $path );
   }
 
-  // POST
   public function post($path, $attributes = array()) {
-    return $this->handleResponse($this->client()->post($path, $this->headers(), json_encode($attributes))->send());
+    return $this->sendRequest( 'POST', $path, $attributes );
   }
 
-  // PATCH
   public function patch($path, $attributes = array()) {
-    return $this->handleResponse($this->client()->patch($path, $this->headers(), json_encode($attributes))->send());
+    return $this->sendRequest( 'PATCH', $path, $attributes );
   }
 
-  // DELETE
   public function delete($path) {
-    return $this->handleResponse($this->client()->delete($path, $this->headers())->send());
+    return $this->sendRequest( 'DELETE', $path );
   }
 
-  public static function headers() {
-    // TODO: move this determination into config file
-    $credentials = Config::base64EncodedCredentials();
+  public function headers() {
+    if (!$this->header) {
+      $this->header = new Connection\Header;
+    }
 
-    return array(
-      'Content-Type' => 'application/json',
-      'Authorization' => 'Basic '.$credentials
-    );
+    return $this->header->getHeaders();
+  }
+
+  // ----------------------------
+  // _____ PRIVATE METHODS ______
+  // ____________________________
+
+  private function sendRequest($verb, $path, $body = null) {
+    if ($body) $body = json_encode($body); // TODO: move assumption of json here into formatter
+    $request = $this->client()->createRequest($verb, $path, $this->headers(), $body);
+    $response = $this->handleResponse( $request->send() );
+    return $response;
   }
 
   private function handleResponse($response) {
