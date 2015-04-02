@@ -4,10 +4,14 @@ namespace RemoteResource;
 use RemoteResource\Connection;
 use RemoteResource\Builder;
 use RemoteResource\Collection;
+use RemoteResource\Config;
 
 class RemoteResource {
-  public static $site, $resource_name;
+  public static $site, $resource_name, $plural_resource_name,
+                $format, $auth_type, $credentials;
+
   protected $id, $errors = array(), $persisted = false, $valid = false, $attributes;
+
   private static $connection;
 
   // -------------------------
@@ -16,7 +20,8 @@ class RemoteResource {
 
   public static function connection() {
     if (!self::$connection) {
-      self::$connection = new Connection;
+      $config = new Config(static::$format, static::$auth_type, static::$credentials);
+      self::$connection = new Connection($config);
     }
 
     return self::$connection;
@@ -82,7 +87,7 @@ class RemoteResource {
 
   // DELETE destroy
   public function destroy() {
-    self::$connection->delete( static::$site."/".$this->id );
+    self::connection()->delete( static::$site."/".$this->id );
   }
 
   // [ POST | PATCH ] save

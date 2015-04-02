@@ -3,15 +3,16 @@ namespace RemoteResource\Connection;
 use RemoteResource\Config;
 
 class Header {
-  private $headers = array();
+  private $config, $headers = array();
+
+  public function __construct(Config $config) {
+    $this->config = $config;
+  }
 
   public function getHeaders() {
     if (empty($headers)) {
-      // TODO: move auth determimation into config file
-      // move json determination into formatter
-      $credentials = Config::base64EncodedCredentials();
-      $this->addHeader('Content-Type', 'application/json');
-      $this->addHeader('Authorization', 'Basic '.$credentials);
+      $this->addContentTypeHeader();
+      $this->addAuthorizationHeader();
     }
 
     return $this->headers;
@@ -19,5 +20,25 @@ class Header {
 
   public function addHeader($header_field_name, $value) {
     $this->headers[$header_field_name] = $value;
+  }
+
+  // ----------------------------
+  // _____ PRIVATE METHODS ______
+  // ____________________________
+
+  private function addContentTypeHeader() {
+    switch ( $this->config->format() ) {
+      case 'json':
+        $content_type = 'application/json';
+        break;
+      default:
+        throw new \Exception('no header implemented for type '.$this->config->format());
+    }
+
+    $this->addHeader('Content-Type', $content_type);
+  }
+
+  private function addAuthorizationHeader() {
+    $this->addHeader('Authorization', $this->config->credentials());
   }
 }

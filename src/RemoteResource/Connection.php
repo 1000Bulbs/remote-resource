@@ -19,16 +19,14 @@ use RemoteResource\Connection\Header;
 use Guzzle\Http\Client;
 
 class Connection {
-  private $client, $header;
+  public $headers;
+  private $client, $config, $formatter;
 
-  public function client() {
-    if (!$this->client) {
-      $client = new Client;
-      $client->setDefaultOption('exceptions', false);
-      $this->client = $client;
-    }
-
-    return $this->client;
+  public function __construct(Config $config) {
+    $this->config = $config;
+    $this->formatter = $config->formatter();
+    $header = new Connection\Header($config);
+    $this->headers = $header->getHeaders();
   }
 
   public function get($path) {
@@ -47,12 +45,14 @@ class Connection {
     return $this->sendRequest( 'DELETE', $path );
   }
 
-  public function headers() {
-    if (!$this->header) {
-      $this->header = new Connection\Header;
+  public function client() {
+    if (!$this->client) {
+      $client = new Client;
+      $client->setDefaultOption('exceptions', false);
+      $this->client = $client;
     }
 
-    return $this->header->getHeaders();
+    return $this->client;
   }
 
   // ----------------------------
@@ -60,8 +60,9 @@ class Connection {
   // ____________________________
 
   private function sendRequest($verb, $path, $body = null) {
-    if ($body) $body = json_encode($body); // TODO: move assumption of json here into formatter
-    $request = $this->client()->createRequest($verb, $path, $this->headers(), $body);
+    if ($body) $body = $this->formatter->format($body);
+
+    $request = $this->client()->createRequest($verb, $path, $this->headers, $body);
     $response = $this->handleResponse( $request->send() );
     return $response;
   }
