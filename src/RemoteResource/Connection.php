@@ -55,6 +55,10 @@ class Connection {
     return $this->client;
   }
 
+  public function setClient($client) {
+    $this->client = $client;
+  }
+
   // ----------------------------
   // _____ PRIVATE METHODS ______
   // ____________________________
@@ -96,6 +100,9 @@ class Connection {
 
     } elseif ($response->getStatusCode() == 422) {
       throw new Exception\ResourceInvalid($decoded_body);
+
+    } elseif ($response->getStatusCode() == 408) {
+      throw new Exception\RequestTimeout($decoded_body);
 
     } elseif ($response->getStatusCode() >= 401 && $response->getStatusCode() < 500) {
       throw new Exception\ClientError($decoded_body);
