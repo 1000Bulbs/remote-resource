@@ -4,7 +4,7 @@
 - requests library replaced with guzzle
 - concept of Formatters introduced
 - Config and Connection APIs turned from class-level to instance-level
-- configuration is not set at the RemoteResource subclass level, giving full control over payload data type and authentication concerns
+- configuration is now set at the RemoteResource subclass level, giving full control over payload data type and authentication concerns
 - groundwork laid for easily adding additional supported configurations
 - custom method support
 
