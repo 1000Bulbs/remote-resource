@@ -31,20 +31,18 @@ RemoteResourceCollection     all()
 ```
 
 ### Usage
-##### Global Configuration
-As a requirement, set credentials to be consumed in the Basic Auth format.
-
-```
-RemoteResource\Config::setCredentials('user:password');
-```
 ##### Creating a Model
-Extend RemoteResource\RemoteResource, and set static $site, $resource_name, and $plural_resource_name properties.
+Extend RemoteResource\RemoteResource, and set static $site, $resource_name, $plural_resource_name properties.
+Configuration is set on a per-resource basis, designated by the $format, $auth_type, and $credentials properties.
 
 ```
 class ProductImage extends RemoteResource\RemoteResource {
-  public static $site                 = "http://localhost:3000/api/product_images"; // required
-  public static $resource_name        = "product_image";                            // required
-  public static $plural_resource_name = "product_images";                           // required
+  public static $site                 = "http://example.com/api/product_images";
+  public static $resource_name        = "product_image";
+  public static $plural_resource_name = "product_images";
+  public static $format               = "json";
+  public static $auth_type            = "basic";
+  public static $credentials          = "user:password";
 }
 ```
 ##### Attribute Assignment
@@ -61,7 +59,7 @@ As with ActiveResource, attributes are accessible as methods. If an attribute co
 ```
 $product_image = ProductImage::find(15);
 echo $product_image->name; // "rainbow cube"
-echo $product_image->sizes_and_urls[30]; // "https://path/to/cdn/image/product_admin/100/sjiEFzciA.png?123984"
+echo $product_image->sizes_and_urls[30]; // "https://path/to/cdn/image/sjiEFzciA.png"
 ```
 
 ##### Create

@@ -1,5 +1,12 @@
 #Changelog
 
+###[0.2.1] - 2015-05-02
+- requests library replaced with guzzle
+- concept of Formatters introduced
+- Config and Connection APIs turned from class-level to instance-level
+- configuration is not set at the RemoteResource subclass level, giving full control over payload data type and authentication concerns
+- groundwork laid for easily adding additional supported configurations
+
 ###[0.2.0] - 2015-05-01
 - php namespace pattern applied
 - test data pulled out of library
