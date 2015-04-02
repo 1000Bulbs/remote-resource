@@ -122,6 +122,36 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $this->assertNotNull($product_image->sizes_and_urls);
   }
 
+  // CUSTOM METHOD 201
+  /**
+   * @group current
+   **/
+  public function testCustomMethod_get_201() {
+    $file = 'tests/fixtures/cube.png';
+    $file_content_type = mime_content_type($file);
+    $file_data = base64_encode(file_get_contents($file));
+    $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
+
+    $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+
+    $product_image = new ProductImage;
+
+    $product_image->product_id = 15;
+    $product_image->file = $file_data_uri;
+
+    // create the product_image
+    $product_image->save();
+
+    // find the product_image by product_id
+    $product_images = ProductImage::where(array('product_id' => 15));
+    $id = $product_images->first()->id();
+
+    // check output for validity
+    $product_id = 12;
+    $cloned_product_image_hash = ProductImage::get($id."/clone/".$product_id);
+    $this->assertEquals($product_id, $cloned_product_image_hash['product_image']['product_id']);
+  }
+
   // SAVE UPDATE 422
   public function testSave_update_422() {
     $file = 'tests/fixtures/cube.png';
@@ -268,9 +298,6 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
   }
 
   // FIND 200
-  /**
-   * @group current
-   **/
   public function testFind_200() {
     $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);

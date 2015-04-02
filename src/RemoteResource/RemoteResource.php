@@ -14,10 +14,6 @@ class RemoteResource {
 
   private static $connection;
 
-  // -------------------------
-  // _____ CLASS METHODS _____
-  // _________________________
-
   public static function connection() {
     if (!self::$connection) {
       $config = new Config(static::$format, static::$auth_type, static::$credentials);
@@ -62,9 +58,25 @@ class RemoteResource {
     return $resource;
   }
 
-  // ----------------------------
-  // _____ INSTANCE METHODS _____
-  // ____________________________
+  public static function get($path, $attributes = array()) {
+    return self::connection()->get( self::wherePath(static::$site.'/'.$path, $attributes) );
+  }
+
+  public static function post($path, $attributes = array()) {
+    return self::connection()->post( static::$site.$path, array(static::$resource_name => $attributes) );
+  }
+
+  public function patch($path, $attributes = array()) {
+    $this->attributes = array_merge($this->attributes, $attributes);
+    return self::connection()->patch(
+      static::$site."/".$this->id.$path,
+      array( static::$resource_name => $this->attributes )
+    );
+  }
+
+  public function delete($path) {
+    return self::connection()->delete(static::$site."/".$this->id.'/'.$path);
+  }
 
   public function __construct($attributes=array()) {
     $this->attributes = $attributes;

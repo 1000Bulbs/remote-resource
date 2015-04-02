@@ -179,6 +179,39 @@ RemoteResource               first()
 RemoteResource               last()
 ```
 
+##### Custom Methods
+RemoteResource allows you to go off of the rails of RESTful convention. Know that __responses will be returned as arrays, and not as RemoteResource objects__.
+
+```
+returns     method        ( args )
+_____________________________________________________________
+array       static get       ( $path, $attributes=array() )
+array       static post      ( $path, $attributes=array() )
+
+array              patch     ( $path, $attributes=array() )
+array              delete    ( $path )
+```
+
+```
+ProductImage::get("5/clone");
+```
+requests GET "http://example.com/product_images/5/clone/"
+
+```
+ProductImage::post("5/clone", array("clone_to" => 15));
+```
+requests POST "http://example.com/product_images/5/clone/"
+
+```
+$product_image->patch("increment");
+```
+requests PATCH "http://example.com/product_images/12/increment/"
+
+```
+$product_image->delete("associated");
+```
+requests DELETE "http://example.com/product_images/12/associated/"
+
 ### Changelog
 View the [CHANGELOG.md](CHANGELOG.md "CHANGELOG.md")
 
