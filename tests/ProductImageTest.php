@@ -1,5 +1,5 @@
 <?php
-require_once 'src/ProductImage.php';
+use RemoteResource\ProductImage;
 
 class ProductImageTest extends PHPUnit_Framework_TestCase
 {
@@ -7,10 +7,10 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
   public function testCreate_422() {
     $attributes = array('name' => 'foo');
 
-    $product_image = ProductImage::create($attributes);
+    $product_image = RemoteResource\ProductImage::create($attributes);
 
     // it should return a ProductImage instance
-    $this->assertInstanceOf('ProductImage', $product_image);
+    $this->assertInstanceOf('RemoteResource\ProductImage', $product_image);
 
     // it should _not_ have an id
     $this->assertNull($product_image->id());
@@ -33,9 +33,9 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
     $attributes = array('file' => 'file');
 
     // it should throw a RemoteResourceServerError
-    $this->setExpectedException('RemoteResourceServerError');
+    $this->setExpectedException('RemoteResource\Exception\ServerError');
 
-    $product_image = ProductImage::create($attributes);
+    $product_image = RemoteResource\ProductImage::create($attributes);
   }
 
   // CREATE 201
@@ -47,10 +47,10 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = ProductImage::create($attributes);
+    $product_image = RemoteResource\ProductImage::create($attributes);
 
     // it should return a ProductImage instance
-    $this->assertInstanceOf('ProductImage', $product_image);
+    $this->assertInstanceOf('RemoteResource\ProductImage', $product_image);
 
     // it should have an id
     $this->assertNotNull($product_image->id());
@@ -72,7 +72,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // SAVE CREATE 422
   public function testSave_create_422() {
-    $product_image = new ProductImage;
+    $product_image = new RemoteResource\ProductImage;
 
     $product_image->name = "cool image";
     $product_image->product_id = 15;
@@ -98,7 +98,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = new ProductImage;
+    $product_image = new RemoteResource\ProductImage;
 
     $product_image->product_id = 15;
     $product_image->file = $file_data_uri;
@@ -124,7 +124,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = new ProductImage;
+    $product_image = new RemoteResource\ProductImage;
 
     $product_image->product_id = 15;
     $product_image->file = $file_data_uri;
@@ -160,7 +160,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = new ProductImage;
+    $product_image = new RemoteResource\ProductImage;
 
     $product_image->product_id = 15;
     $product_image->file = $file_data_uri;
@@ -186,22 +186,22 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // ALL 200
   public function testAll_200() {
-    $product_images = ProductImage::all();
+    $product_images = RemoteResource\ProductImage::all();
 
-    // it should return a RemoteResourceCollection instance
-    $this->assertInstanceOf('RemoteResourceCollection', $product_images);
+    // it should return a RemoteResource\Collection instance
+    $this->assertInstanceOf('RemoteResource\Collection', $product_images);
   }
 
   // WHERE 200
   public function testWhere_200() {
-    $product_images = ProductImage::where(array('product_id' => 15));
+    $product_images = RemoteResource\ProductImage::where(array('product_id' => 15));
 
-    // it should return a RemoteResourceCollection instance
-    $this->assertInstanceOf('RemoteResourceCollection', $product_images);
+    // it should return a RemoteResource\Collection instance
+    $this->assertInstanceOf('RemoteResource\Collection', $product_images);
 
-    // the RemoteResourceCollection should contain ProductImage instances
-    $this->assertInstanceOf('ProductImage', $product_images->first());
-    $this->assertInstanceOf('ProductImage', $product_images->last());
+    // the RemoteResource\Collection should contain ProductImage instances
+    $this->assertInstanceOf('RemoteResource\ProductImage', $product_images->first());
+    $this->assertInstanceOf('RemoteResource\ProductImage', $product_images->last());
 
     // the ProductImage instances are properly formatted
     $product_image_sample = $product_images->first();
@@ -215,10 +215,10 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
   // WHERE noMatches
   public function testWhere_noMatches() {
-    $product_images = ProductImage::where(array());
+    $product_images = RemoteResource\ProductImage::where(array());
 
-    // it should return a RemoteResourceCollection instance
-    $this->assertInstanceOf('RemoteResourceCollection', $product_images);
+    // it should return a RemoteResource\Collection instance
+    $this->assertInstanceOf('RemoteResource\Collection', $product_images);
 
     // it should have a count of zero
     $this->assertEquals($product_images->count(), 0);
@@ -233,21 +233,21 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = ProductImage::create($attributes);
+    $product_image = RemoteResource\ProductImage::create($attributes);
 
     $result = $product_image->destroy();
 
     // it destroys the product_image
-    $this->setExpectedException('RemoteResourceResourceNotFound');
-    ProductImage::find($product_image->id());
+    $this->setExpectedException('RemoteResource\Exception\ResourceNotFound');
+    RemoteResource\ProductImage::find($product_image->id());
   }
 
   // DESTROY 404
   public function testDestroy_404() {
-    $product_image = new ProductImage;
+    $product_image = new RemoteResource\ProductImage;
 
     // it should throw a RemoteResourceResourceNotFound
-    $this->setExpectedException('RemoteResourceResourceNotFound');
+    $this->setExpectedException('RemoteResource\Exception\ResourceNotFound');
 
     $product_image->destroy();
   }
@@ -255,12 +255,15 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
   // FIND 404
   public function testFind_404() {
     // it should throw a RemoteResourceResourceNotFound
-    $this->setExpectedException('RemoteResourceResourceNotFound');
+    $this->setExpectedException('RemoteResource\Exception\ResourceNotFound');
 
-    ProductImage::find(999);
+    RemoteResource\ProductImage::find(9999);
   }
 
   // FIND 200
+  /**
+   * @group current
+   **/
   public function testFind_200() {
     $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
@@ -269,12 +272,12 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image_created = ProductImage::create($attributes);
+    $product_image_created = RemoteResource\ProductImage::create($attributes);
 
-    $product_image_found = ProductImage::find($product_image_created->id());
+    $product_image_found = RemoteResource\ProductImage::find($product_image_created->id());
 
     // it shound return a ProductImage instance
-    $this->assertInstanceOf('ProductImage', $product_image_found);
+    $this->assertInstanceOf('RemoteResource\ProductImage', $product_image_found);
 
     // it should be flagged as persisted
     $this->assertTrue($product_image_found->persisted());
@@ -300,7 +303,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = ProductImage::create($attributes);
+    $product_image = RemoteResource\ProductImage::create($attributes);
     $attributes = $product_image->attributes();
     $previous_name_value = $attributes["name"];
 
@@ -333,17 +336,17 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = ProductImage::create($attributes);
+    $product_image = RemoteResource\ProductImage::create($attributes);
 
     // it should throw a RemoteResourceServerError
-    $this->setExpectedException('RemoteResourceServerError');
+    $this->setExpectedException('RemoteResource\Exception\ServerError');
 
     $result = $product_image->updateAttributes(array('file' => 'file'));
   }
 
   // UPDATE not persisted
   public function testUpdateAttributes_notPersisted() {
-    $product_image = new ProductImage;
+    $product_image = new RemoteResource\ProductImage;
 
     $this->setExpectedException('Exception', 'Attempted update: RemoteResource not persisted');
 
@@ -359,7 +362,7 @@ class ProductImageTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
 
-    $product_image = ProductImage::create($attributes);
+    $product_image = RemoteResource\ProductImage::create($attributes);
 
     $string_too_long = 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
     $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';

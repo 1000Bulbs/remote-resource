@@ -1,5 +1,6 @@
 <?php
-require_once 'src/BasicRemoteResource.php';
+use RemoteResource\Config;
+use RemoteResource\BasicRemoteResource;
 
 class BasicRemoteResourceTest extends PHPUnit_Framework_TestCase
 {
@@ -7,9 +8,9 @@ class BasicRemoteResourceTest extends PHPUnit_Framework_TestCase
   {
     // set credentials in remote resource configuration
     $credentials = 'user:password';
-    RemoteResourceConfig::setCredentials($credentials);
+    \RemoteResource\Config::setCredentials($credentials);
 
-    $subject = new BasicRemoteResource();
+    $subject = new \RemoteResource\BasicRemoteResource();
 
     $this->assertEquals(
       $subject->headers(),

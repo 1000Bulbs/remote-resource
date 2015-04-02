@@ -1,5 +1,7 @@
 <?php
-require_once 'src/RemoteResource.php';
+namespace RemoteResource;
+
+use RemoteResource\RemoteResource;
 
 class ProductImage extends RemoteResource {
   public static $site                 = "http://localhost:3000/api/product_images";

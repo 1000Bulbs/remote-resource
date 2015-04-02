@@ -1,7 +1,9 @@
 <?php
-require_once 'src/BasicRemoteResource.php';
-require_once 'src/RemoteResourceBuilder.php';
-require_once 'src/RemoteResourceCollection.php';
+namespace RemoteResource;
+
+use RemoteResource\BasicRemoteResource;
+use RemoteResource\Builder;
+use RemoteResource\Collection;
 
 class RemoteResource extends BasicRemoteResource {
   public static $site, $resource_name;
@@ -14,21 +16,21 @@ class RemoteResource extends BasicRemoteResource {
   // GET index
   public static function all() {
     $response = self::get( static::$site );
-    $remote_resource_collection = new RemoteResourceCollection(new static, $response);
+    $remote_resource_collection = new Collection(new static, $response);
     return $remote_resource_collection;
   }
 
   // GET index w/ params
   public static function where($attributes = array()) {
     $response = self::get( self::wherePath(static::$site, $attributes) );
-    $remote_resource_collection = new RemoteResourceCollection(new static, $response);
+    $remote_resource_collection = new Collection(new static, $response);
     return $remote_resource_collection;
   }
 
   // GET show
   public static function find($id) {
     $response = self::get( static::$site."/".$id );
-    $resource = RemoteResourceBuilder::build(new static, $response);
+    $resource = Builder::build(new static, $response);
     return $resource;
   }
 
@@ -37,8 +39,8 @@ class RemoteResource extends BasicRemoteResource {
 
     try {
       $response = self::post( static::$site, array(static::$resource_name => $attributes) );
-      $resource = RemoteResourceBuilder::build(new static, $response);
-    } catch ( RemoteResourceResourceInvalid $e ) {
+      $resource = Builder::build(new static, $response);
+    } catch ( Exception\ResourceInvalid $e ) {
       $resource = new static($attributes);
       $resource->errors = $e->response["errors"];
     }
@@ -64,7 +66,7 @@ class RemoteResource extends BasicRemoteResource {
 
   // update attributes
   public function updateAttributes($attributes) {
-    if (!$this->persisted) throw new Exception("Attempted update: RemoteResource not persisted");
+    if (!$this->persisted) throw new \Exception("Attempted update: RemoteResource not persisted");
     $this->attributes = array_merge($this->attributes, $attributes);
     return $this->update();
   }
@@ -103,7 +105,7 @@ class RemoteResource extends BasicRemoteResource {
   // POST create
   private function instanceCreate() {
     $resource_to_merge = self::create($this->attributes);
-    RemoteResourceBuilder::merge($this, $resource_to_merge);
+    Builder::merge($this, $resource_to_merge);
     return $this->valid() ? true : false;
   }
 
@@ -113,7 +115,7 @@ class RemoteResource extends BasicRemoteResource {
       $response = self::patch( static::$site."/".$this->id, array( static::$resource_name => $this->attributes ) );
       $this->errors = array();
       $updated = true;
-    } catch ( RemoteResourceResourceInvalid $e ) {
+    } catch ( Exception\ResourceInvalid $e ) {
       $this->errors = $e->response["errors"];
       $updated = false;
     }

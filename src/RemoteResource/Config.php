@@ -1,6 +1,7 @@
 <?php
+namespace RemoteResource;
 
-class RemoteResourceConfig {
+class Config {
   private static $credentials;
 
   public static function setCredentials($credentials) {

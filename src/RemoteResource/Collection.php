@@ -1,14 +1,14 @@
 <?php
-require_once 'src/RemoteResourceBuilder.php';
+namespace RemoteResource;
 
-class RemoteResourceCollection implements Iterator {
+class Collection implements \Iterator {
   private $_collection = array();
 
   public function __construct($resource_instance, $response) {
     $resource_class = get_class($resource_instance);
 
      foreach ($response[$resource_class::$plural_resource_name] as $attributes) {
-       $resource = RemoteResourceBuilder::buildForCollection(new $resource_class, $attributes);
+       $resource = Builder::buildForCollection(new $resource_class, $attributes);
        array_push($this->_collection, $resource);
      }
   }

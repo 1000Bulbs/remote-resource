@@ -1,6 +1,7 @@
 <?php
+namespace RemoteResource;
 
-class RemoteResourceBuilder {
+class Builder {
   public static function build($resource, $response) {
     $resource_class = get_class($resource);
 
