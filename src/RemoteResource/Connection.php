@@ -18,34 +18,41 @@ use RemoteResource\Exception\ConnectionError;
 use Guzzle\Http\Client;
 
 class Connection {
+  private $client;
+
   // Create a guzzle client
-  public static function client() {
-    $client = new Client();
-    $client->setDefaultOption('exceptions', false);
-    return $client;
+  public function client() {
+    if (!$this->client) {
+      $client = new Client;
+      $client->setDefaultOption('exceptions', false);
+      $this->client = $client;
+    }
+
+    return $this->client;
   }
 
   // GET
-  public static function get($path) {
-    return self::handleResponse(self::client()->get($path, self::headers())->send());
+  public function get($path) {
+    return $this->handleResponse($this->client()->get($path, $this->headers())->send());
   }
 
   // POST
-  public static function post($path, $attributes = array()) {
-    return self::handleResponse(self::client()->post($path, self::headers(), json_encode($attributes))->send());
+  public function post($path, $attributes = array()) {
+    return $this->handleResponse($this->client()->post($path, $this->headers(), json_encode($attributes))->send());
   }
 
   // PATCH
-  public static function patch($path, $attributes = array()) {
-    return self::handleResponse(self::client()->patch($path, self::headers(), json_encode($attributes))->send());
+  public function patch($path, $attributes = array()) {
+    return $this->handleResponse($this->client()->patch($path, $this->headers(), json_encode($attributes))->send());
   }
 
   // DELETE
-  public static function delete($path) {
-    return self::handleResponse(self::client()->delete($path, self::headers())->send());
+  public function delete($path) {
+    return $this->handleResponse($this->client()->delete($path, $this->headers())->send());
   }
 
   public static function headers() {
+    // TODO: move this determination into config file
     $credentials = Config::base64EncodedCredentials();
 
     return array(
@@ -54,7 +61,7 @@ class Connection {
     );
   }
 
-  private static function handleResponse($response) {
+  private function handleResponse($response) {
     $decoded_body = json_decode( $response->getBody(), true );
 
     if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 400) {
