@@ -63,19 +63,19 @@ class RemoteResource {
   }
 
   public static function post($path, $attributes = array()) {
-    return self::connection()->post( static::$site.$path, array(static::$resource_name => $attributes) );
+    return self::connection()->post( static::$site.'/'.$path, array(static::$resource_name => $attributes) );
   }
 
   public function patch($path, $attributes = array()) {
     $this->attributes = array_merge($this->attributes, $attributes);
     return self::connection()->patch(
-      static::$site."/".$this->id.$path,
+      static::$site.'/'.$this->id.'/'.$path,
       array( static::$resource_name => $this->attributes )
     );
   }
 
   public function delete($path) {
-    return self::connection()->delete(static::$site."/".$this->id.'/'.$path);
+    return self::connection()->delete(static::$site.'/'.$this->id.'/'.$path);
   }
 
   public function __construct($attributes=array()) {

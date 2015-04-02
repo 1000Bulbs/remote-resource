@@ -215,9 +215,6 @@ requests DELETE "http://example.com/product_images/12/associated/"
 ### Changelog
 View the [CHANGELOG.md](CHANGELOG.md "CHANGELOG.md")
 
-### Version
-View the [version](version.rb "version")
-
 ### TODO
 - Custom API Actions
 - Pre-recorded Tests ( PHP VCR )
