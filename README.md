@@ -1,4 +1,5 @@
 # RemoteResource
+Supports PHP 5.3.2 and up.
 
 ### Philosophy
 RemoteResource adopts most of the public API of ActiveResource for Rails and enforces many of the same expectations.
