@@ -15,7 +15,7 @@ use RemoteResource\Exception\ClientError;
 use RemoteResource\Exception\ServerError;
 use RemoteResource\Exception\ConnectionError;
 
-class BasicRemoteResource {
+class Connection {
   // GET
   public static function get($path) {
     return self::handleResponse(\Requests::get($path, self::headers()));

@@ -1,8 +1,8 @@
 <?php
 use RemoteResource\Config;
-use RemoteResource\BasicRemoteResource;
+use RemoteResource\Connection;
 
-class BasicRemoteResourceTest extends PHPUnit_Framework_TestCase
+class ConnectionTest extends PHPUnit_Framework_TestCase
 {
   public function testHeaders()
   {
@@ -10,7 +10,7 @@ class BasicRemoteResourceTest extends PHPUnit_Framework_TestCase
     $credentials = 'user:password';
     \RemoteResource\Config::setCredentials($credentials);
 
-    $subject = new \RemoteResource\BasicRemoteResource();
+    $subject = new \RemoteResource\Connection();
 
     $this->assertEquals(
       $subject->headers(),

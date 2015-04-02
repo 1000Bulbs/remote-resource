@@ -1,11 +1,11 @@
 <?php
 namespace RemoteResource;
 
-use RemoteResource\BasicRemoteResource;
+use RemoteResource\Connection;
 use RemoteResource\Builder;
 use RemoteResource\Collection;
 
-class RemoteResource extends BasicRemoteResource {
+class RemoteResource {
   public static $site, $resource_name;
   protected $id, $errors = array(), $persisted = false, $valid = false, $attributes;
 
@@ -15,21 +15,21 @@ class RemoteResource extends BasicRemoteResource {
 
   // GET index
   public static function all() {
-    $response = self::get( static::$site );
+    $response = Connection::get( static::$site );
     $remote_resource_collection = new Collection(new static, $response);
     return $remote_resource_collection;
   }
 
   // GET index w/ params
   public static function where($attributes = array()) {
-    $response = self::get( self::wherePath(static::$site, $attributes) );
+    $response = Connection::get( self::wherePath(static::$site, $attributes) );
     $remote_resource_collection = new Collection(new static, $response);
     return $remote_resource_collection;
   }
 
   // GET show
   public static function find($id) {
-    $response = self::get( static::$site."/".$id );
+    $response = Connection::get( static::$site."/".$id );
     $resource = Builder::build(new static, $response);
     return $resource;
   }
@@ -38,7 +38,7 @@ class RemoteResource extends BasicRemoteResource {
   public static function create($attributes) {
 
     try {
-      $response = self::post( static::$site, array(static::$resource_name => $attributes) );
+      $response = Connection::post( static::$site, array(static::$resource_name => $attributes) );
       $resource = Builder::build(new static, $response);
     } catch ( Exception\ResourceInvalid $e ) {
       $resource = new static($attributes);
@@ -73,7 +73,7 @@ class RemoteResource extends BasicRemoteResource {
 
   // DELETE destroy
   public function destroy() {
-    self::delete( static::$site."/".$this->id );
+    Connection::delete( static::$site."/".$this->id );
   }
 
   // [ POST | PATCH ] save
@@ -112,7 +112,7 @@ class RemoteResource extends BasicRemoteResource {
   // PATCH update
   private function update() {
     try {
-      $response = self::patch( static::$site."/".$this->id, array( static::$resource_name => $this->attributes ) );
+      $response = Connection::patch( static::$site."/".$this->id, array( static::$resource_name => $this->attributes ) );
       $this->errors = array();
       $updated = true;
     } catch ( Exception\ResourceInvalid $e ) {
