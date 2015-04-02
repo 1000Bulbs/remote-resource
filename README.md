@@ -35,13 +35,13 @@ RemoteResourceCollection     all()
 As a requirement, set credentials to be consumed in the Basic Auth format.
 
 ```
-RemoteResourceConfig::setCredentials('user:password');
+RemoteResource\Config::setCredentials('user:password');
 ```
 ##### Creating a Model
-Extend RemoteResource, and set static $site, $resource_name, and $plural_resource_name properties.
+Extend RemoteResource\RemoteResource, and set static $site, $resource_name, and $plural_resource_name properties.
 
 ```
-class ProductImage extends RemoteResource {
+class ProductImage extends RemoteResource\RemoteResource {
   public static $site                 = "http://localhost:3000/api/product_images"; // required
   public static $resource_name        = "product_image";                            // required
   public static $plural_resource_name = "product_images";                           // required
@@ -126,24 +126,24 @@ Familiarize yourself with RemoteResource Exceptions. __Exceptions are evaluated 
 
 ```
 status_code         exception
-------------------------------------------------
-400                 RemoteResourceBadRequest
-401                 RemoteResourceUnauthorizedAccess
-403                 RemoteResourceForbiddenAccess
-404                 RemoteResourceResourceNotFound
-405                 RemoteResourceMethodNotAllowed
-409                 RemoteResourceResourceConflict
-410                 RemoteResourceResourceGone
-401..499            RemoteResourceClientError
-500..599            RemoteResourceServerError
-unknown             RemoteResourceConnectionError
+---------------------------------------------------------------
+400                 RemoteResource\Exception\BadRequest
+401                 RemoteResource\Exception\UnauthorizedAccess
+403                 RemoteResource\Exception\ForbiddenAccess
+404                 RemoteResource\Exception\ResourceNotFound
+405                 RemoteResource\Exception\MethodNotAllowed
+409                 RemoteResource\Exception\ResourceConflict
+410                 RemoteResource\Exception\ResourceGone
+401..499            RemoteResource\Exception\ClientError
+500..599            RemoteResource\Exception\ServerError
+unknown             RemoteResource\Exception\ConnectionError
 ```
 
 The response that triggered the exception is stored, and can be accessed.
 
 ```
 try {
-} catch ( RemoteResourceResourceNotFound $e) {
+} catch ( RemoteResource\Exception\ResourceNotFound $e) {
   $response = $e->response;
 }
 ```
@@ -160,23 +160,21 @@ if ( $product_image->valid() ) {
 
 Validity is determined by whether or not errors were generated for the resource. A resource is considered valid when it has no errors. This does not necessarily mean that the resource has been persisted. Check the persisted() method for this information.
 
-### RemoteResourceCollection
-A RemoteResourceCollection is a collection of RemoteResource objects. The RemoteResourceCollection object implements the Iterator interface, and can therefore be treated as a PHP collection.
+### RemoteResource\Collection
+A RemoteResource\Collection is a collection of RemoteResource objects. The RemoteResource\Collection object implements the Iterator interface, and can therefore be treated as a PHP collection.
 
 ```
 $remote_resource_collection = ProductImage::all();
 
 foreach($remote_resource_collection as $remote_resource) {
-  echo get_class( $remote_resource ); // "RemoteResource"
+  echo get_class( $remote_resource ); // "RemoteResource\RemoteResource"
 }
 ```
 
-##### RemoteResourceCollection methods of interest
+##### RemoteResource\Collection methods of interest
 ```
 returns                      method( args )
 ____________________________________________________________
-RemoteResource               current()
-RemoteResource               next()
 integer                      size() || count()
 RemoteResource               first()
 RemoteResource               last()
@@ -191,4 +189,7 @@ View the [version](version.rb "version")
 ### TODO
 - Custom API Actions
 - Pre-recorded Tests ( PHP VCR )
-- Clean up example code
+- bootstrapping for src/RemoteResource
+- more tests for Connection
+- supports declaration / packagist
+- better code commenting ( documentation )

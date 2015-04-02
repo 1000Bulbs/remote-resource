@@ -8,9 +8,9 @@ class ConnectionTest extends PHPUnit_Framework_TestCase
   {
     // set credentials in remote resource configuration
     $credentials = 'user:password';
-    \RemoteResource\Config::setCredentials($credentials);
+    RemoteResource\Config::setCredentials($credentials);
 
-    $subject = new \RemoteResource\Connection();
+    $subject = new RemoteResource\Connection();
 
     $this->assertEquals(
       $subject->headers(),
