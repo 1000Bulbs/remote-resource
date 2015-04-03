@@ -131,6 +131,7 @@ status_code         exception
 403                 RemoteResource\Exception\ForbiddenAccess
 404                 RemoteResource\Exception\ResourceNotFound
 405                 RemoteResource\Exception\MethodNotAllowed
+408                 RemoteResource\Exception\RequestTimeout
 409                 RemoteResource\Exception\ResourceConflict
 410                 RemoteResource\Exception\ResourceGone
 401..499            RemoteResource\Exception\ClientError

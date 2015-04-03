@@ -93,6 +93,9 @@ class Connection {
     } elseif ($response->getStatusCode() == 405) {
       throw new Exception\MethodNotAllowed($decoded_body);
 
+    } elseif ($response->getStatusCode() == 408) {
+      throw new Exception\RequestTimeout($decoded_body);
+
     } elseif ($response->getStatusCode() == 409) {
       throw new Exception\ResourceConflict($decoded_body);
 
@@ -101,9 +104,6 @@ class Connection {
 
     } elseif ($response->getStatusCode() == 422) {
       throw new Exception\ResourceInvalid($decoded_body);
-
-    } elseif ($response->getStatusCode() == 408) {
-      throw new Exception\RequestTimeout($decoded_body);
 
     } elseif ($response->getStatusCode() >= 401 && $response->getStatusCode() < 500) {
       throw new Exception\ClientError($decoded_body);

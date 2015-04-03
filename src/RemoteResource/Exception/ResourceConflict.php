@@ -1,4 +1,4 @@
-?php
+<?php
 namespace RemoteResource\Exception;
 use RemoteResource\Exception;
 
