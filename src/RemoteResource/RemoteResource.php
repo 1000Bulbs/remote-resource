@@ -5,6 +5,9 @@ use RemoteResource\Connection;
 use RemoteResource\Builder;
 use RemoteResource\Collection;
 use RemoteResource\Config;
+use RemoteResource\Config\Pool as ConfigPool;
+use RemoteResource\Connection\Pool as ConnectionPool;
+
 use Doctrine\Common\Inflector\Inflector;
 
 class RemoteResource {
@@ -13,15 +16,12 @@ class RemoteResource {
 
   protected $id, $errors = array(), $persisted = false, $valid = false, $attributes;
 
-  private static $connection;
+  public static function config() {
+    return ConfigPool::getConfig( get_called_class() );
+  }
 
   public static function connection() {
-    if (!self::$connection) {
-      $config = new Config(static::$format, static::$auth_type, static::$credentials);
-      self::$connection = new Connection($config);
-    }
-
-    return self::$connection;
+    return ConnectionPool::getConnection( get_called_class() );
   }
 
   public static function resourceName() {

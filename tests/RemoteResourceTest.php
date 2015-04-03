@@ -1,6 +1,21 @@
 <?php
 class ProductImage extends RemoteResource\RemoteResource {
-  public static $site                 = "http://localhost:3000/api/product_images";
+  public static $site = "http://localhost:3000/api/product_images";
+}
+
+class StaticPage extends RemoteResource\RemoteResource {
+  public static $site = "http://localhost:3001/api/static_pages";
+  public static $resource_name = 'page';
+  public static $format = 'json';
+  public static $auth_type = 'basic';
+  public static $credentials = 'foo:bar';
+}
+
+class Brand extends RemoteResource\RemoteResource {
+  public static $site = "http://localhost:3002/api/brands";
+  public static $plural_resource_name = 'manufacturers';
+  public static $auth_type = 'basic';
+  public static $credentials = 'user:password';
 }
 
 class RemoteResourceTest extends PHPUnit_Framework_TestCase {
@@ -10,6 +25,42 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase {
     // set client to MockClient
     ProductImage::connection()->setClient(new MockClient());
     $this->client = ProductImage::connection()->client();
+  }
+
+  // multiple remote resource instances
+  /**
+   * @group current
+   */
+  public function testsMultipleInstances() {
+    // sites
+    $this->assertEquals(ProductImage::$site, "http://localhost:3000/api/product_images");
+    $this->assertEquals(StaticPage::$site, "http://localhost:3001/api/static_pages");
+    $this->assertEquals(Brand::$site, "http://localhost:3002/api/brands");
+
+    // resource names
+    $this->assertEquals(ProductImage::resourceName(), 'product_image');
+    $this->assertEquals(StaticPage::resourceName(), 'page');
+    $this->assertEquals(Brand::resourceName(), 'brand');
+
+    // plural resource names
+    $this->assertEquals(ProductImage::pluralResourceName(), 'product_images');
+    $this->assertEquals(StaticPage::pluralResourceName(), 'pages');
+    $this->assertEquals(Brand::pluralResourceName(), 'manufacturers');
+
+    // formats
+    $this->assertEquals(ProductImage::config()->format(), 'json');
+    $this->assertEquals(StaticPage::config()->format(), 'json');
+    $this->assertEquals(Brand::config()->format(), 'json');
+
+    // auth types
+    $this->assertEquals(ProductImage::config()->authType(), 'none');
+    $this->assertEquals(StaticPage::config()->authType(), 'basic');
+    $this->assertEquals(Brand::config()->authType(), 'basic');
+
+    // credentials
+    $this->assertEquals(ProductImage::config()->credentials(), null);
+    $this->assertEquals(StaticPage::config()->credentials(), 'Basic '.base64_encode('foo:bar'));
+    $this->assertEquals(Brand::config()->credentials(), 'Basic '.base64_encode('user:password'));
   }
 
   // CREATE 422
@@ -396,9 +447,6 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase {
   }
 
   // UPDATE 422
-  /**
-   * @group current
-   */
   public function testUpdateAttributes_422() {
     $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
