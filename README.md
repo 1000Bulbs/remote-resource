@@ -33,7 +33,8 @@ RemoteResourceCollection     all()
 
 ### Usage
 ##### Creating a Model
-Extend RemoteResource\RemoteResource, and set static $site, $resource_name, $plural_resource_name properties.
+Extend RemoteResource\RemoteResource, and set static $site.
+$resource_name and $plural_resource_name properties are optional, and may be set where the name of the class does not mirror the name of the remote resource.
 Configuration is set on a per-resource basis, designated by the $format, $auth_type, and $credentials properties.
 
 ```
@@ -46,6 +47,14 @@ class ProductImage extends RemoteResource\RemoteResource {
   public static $credentials          = "user:password";
 }
 ```
+
+##### Simplest Model
+```
+class ProductImage extends RemoteResource\RemoteResource {
+  public static $site = "http://example.com/api/product_images";
+}
+```
+
 ##### Attribute Assignment
 Dynamically assigned attributes are added to the attributes which will be sent over on save.
 
