@@ -65,7 +65,7 @@ class Connection {
   // ____________________________
 
   private function sendRequest($verb, $path, $body = null) {
-    if ($body) $body = $this->formatter->format($body);
+    if ($body) $body = $this->formatter->formatRequest($body);
 
     $request = $this->client()->createRequest($verb, $path, $this->headers, $body);
     $response = $this->handleResponse( $request->send() );
@@ -73,7 +73,7 @@ class Connection {
   }
 
   private function handleResponse($response) {
-    $decoded_body = json_decode( $response->getBody(), true ); // TODO: move this json decode reference into the Formatter\Json class
+    $decoded_body = $this->formatter->formatResponse( $response->getBody() );
 
     if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 400) {
       return $decoded_body;
