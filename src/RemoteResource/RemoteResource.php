@@ -5,6 +5,7 @@ use RemoteResource\Connection;
 use RemoteResource\Builder;
 use RemoteResource\Collection;
 use RemoteResource\Config;
+use Doctrine\Common\Inflector\Inflector;
 
 class RemoteResource {
   public static $site, $resource_name, $plural_resource_name,
@@ -21,6 +22,22 @@ class RemoteResource {
     }
 
     return self::$connection;
+  }
+
+  public static function resourceName() {
+    if (static::$resource_name) {
+      return static::$resource_name;
+    } else {
+      return Inflector::tableize( get_called_class() );
+    }
+  }
+
+  public static function pluralResourceName() {
+    if (static::$plural_resource_name) {
+      return static::$plural_resource_name;
+    } else {
+      return Inflector::pluralize( static::resourceName() );
+    }
   }
 
   // GET index
@@ -48,7 +65,7 @@ class RemoteResource {
   public static function create($attributes) {
 
     try {
-      $response = self::connection()->post( static::$site, array(static::$resource_name => $attributes) );
+      $response = self::connection()->post( static::$site, array(static::resourceName() => $attributes) );
       $resource = Builder::build(new static, $response);
     } catch ( Exception\ResourceInvalid $e ) {
       $resource = new static($attributes);
@@ -63,14 +80,14 @@ class RemoteResource {
   }
 
   public static function post($path, $attributes = array()) {
-    return self::connection()->post( static::$site.'/'.$path, array(static::$resource_name => $attributes) );
+    return self::connection()->post( static::$site.'/'.$path, array(static::resourceName() => $attributes) );
   }
 
   public function patch($path, $attributes = array()) {
     $this->attributes = array_merge($this->attributes, $attributes);
     return self::connection()->patch(
       static::$site.'/'.$this->id.'/'.$path,
-      array( static::$resource_name => $this->attributes )
+      array( static::resourceName() => $this->attributes )
     );
   }
 
@@ -138,7 +155,7 @@ class RemoteResource {
   // PATCH update
   private function update() {
     try {
-      $response = self::connection()->patch( static::$site."/".$this->id, array( static::$resource_name => $this->attributes ) );
+      $response = self::connection()->patch( static::$site."/".$this->id, array( static::resourceName() => $this->attributes ) );
       $this->errors = array();
       $updated = true;
     } catch ( Exception\ResourceInvalid $e ) {

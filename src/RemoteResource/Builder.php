@@ -6,8 +6,8 @@ class Builder {
     $resource_class = get_class($resource);
 
     $resource->setPersisted(true);
-    $resource->setId($response[$resource_class::$resource_name]["id"]);
-    $resource->setAttributes(array_merge($resource->attributes(), $response[$resource_class::$resource_name]));
+    $resource->setId($response[$resource_class::resourceName()]["id"]);
+    $resource->setAttributes(array_merge($resource->attributes(), $response[$resource_class::resourceName()]));
     $resource->setErrors(array());
 
     return $resource;
