@@ -322,10 +322,9 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
   }
 
   // FIND 404
-  /**
-   * @group current
-   */
   public function testFind_404() {
+    ProductImage::connection()->client()->setResponseParams(404);
+
     // it should throw a RemoteResourceResourceNotFound
     $this->setExpectedException('RemoteResource\Exception\ResourceNotFound');
 
@@ -339,12 +338,12 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $file_data = base64_encode(file_get_contents($file));
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
 
-    $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+    $attributes = array('product_id' => 15, 'file' => $file_data_uri, 'id' => 2);
     ProductImage::connection()->client()->setResponseParams(201, array('product_image' => $attributes));
 
     $product_image_created = ProductImage::create($attributes);
 
-    ProductImage::connection()->client()->setResponseParams(200, array('product_image' => array('product_id' => 15), 'errors' => array()));
+    ProductImage::connection()->client()->setResponseParams(200, array('product_image' => array('id' => $product_image_created->id(), 'product_id' => 15)));
     $product_image_found = ProductImage::find($product_image_created->id());
 
     // it shound return a ProductImage instance
@@ -372,7 +371,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $file_data = base64_encode(file_get_contents($file));
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
 
-    $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+    $attributes = array('product_id' => 15, 'file' => $file_data_uri, 'id' => 5, 'name' => 'cool name');
     ProductImage::connection()->client()->setResponseParams(201, array('product_image' => $attributes));
 
     $product_image = ProductImage::create($attributes);
@@ -407,7 +406,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $file_data = base64_encode(file_get_contents($file));
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
 
-    $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+    $attributes = array('product_id' => 15, 'file' => $file_data_uri, 'id' => 5);
     ProductImage::connection()->client()->setResponseParams(201, array('product_image' => $attributes));
     $product_image = ProductImage::create($attributes);
 
@@ -428,13 +427,16 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
   }
 
   // UPDATE 422
+  /**
+   * @group current
+   */
   public function testUpdateAttributes_422() {
     $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
     $file_data = base64_encode(file_get_contents($file));
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
 
-    $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+    $attributes = array('product_id' => 15, 'file' => $file_data_uri, 'id' => 3);
     ProductImage::connection()->client()->setResponseParams(201, array('product_image' => $attributes));
     $product_image = ProductImage::create($attributes);
 
