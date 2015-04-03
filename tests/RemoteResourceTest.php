@@ -340,9 +340,11 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => $attributes));
 
     $product_image_created = ProductImage::create($attributes);
 
+    ProductImage::connection()->client()->setResponseParams(200, array('product_image' => array('product_id' => 15), 'errors' => array()));
     $product_image_found = ProductImage::find($product_image_created->id());
 
     // it shound return a ProductImage instance
@@ -371,11 +373,13 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
+    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => $attributes));
 
     $product_image = ProductImage::create($attributes);
     $attributes = $product_image->attributes();
     $previous_name_value = $attributes["name"];
 
+    ProductImage::connection()->client()->setResponseParams(204);
     $result = $product_image->updateAttributes(array('name' => 'new name'));
 
     // it should return _true_
@@ -404,12 +408,13 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
-
+    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => $attributes));
     $product_image = ProductImage::create($attributes);
 
     // it should throw a RemoteResourceServerError
     $this->setExpectedException('RemoteResource\Exception\ServerError');
 
+    ProductImage::connection()->client()->setResponseParams(500);
     $result = $product_image->updateAttributes(array('file' => 'file'));
   }
 
@@ -430,7 +435,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri);
-
+    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => $attributes));
     $product_image = ProductImage::create($attributes);
 
     $string_too_long = 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
@@ -439,6 +444,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
     $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
 
+    ProductImage::connection()->client()->setResponseParams(422, array('errors' => array('Name is too long (maximum is 255 characters)')));
     $result = $product_image->updateAttributes(array('name' => $string_too_long));
 
     // it should return _false_
