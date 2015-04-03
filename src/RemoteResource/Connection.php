@@ -68,7 +68,7 @@ class Connection {
   }
 
   private function handleResponse($response) {
-    $decoded_body = json_decode( $response->getBody(), true );
+    $decoded_body = json_decode( $response->getBody(), true ); // TODO: move this json decode reference into the Formatter\Json class
 
     if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 400) {
       return $decoded_body;
