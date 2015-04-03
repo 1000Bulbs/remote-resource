@@ -4,19 +4,25 @@ use RemoteResource\Connection;
 
 class ConnectionTest extends PHPUnit_Framework_TestCase
 {
-  public function testHeaders()
+  protected $config, $connection;
+
+  protected function setUp()
   {
-    // set config in remote resource configuration
-    $config = new RemoteResource\Config(
+    $this->config = new RemoteResource\Config(
       $format      = 'json',
       $auth_type   = 'basic',
       $credentials = 'user:password'
     );
 
-    $subject = new RemoteResource\Connection($config);
+    $this->connection = new RemoteResource\Connection($this->config);
+    $this->connection->setClient(new MockClient());
+  }
+
+  public function testHeaders()
+  {
 
     $this->assertEquals(
-      $subject->headers,
+      $this->connection->headers,
       array(
         'Content-Type' => 'application/json',
         'Authorization' => 'Basic '.base64_encode('user:password')
