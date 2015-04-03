@@ -217,8 +217,6 @@ $product_image->delete("associated");
 View the [CHANGELOG.md](CHANGELOG.md "CHANGELOG.md")
 
 ### TODO
-- Pre-recorded Tests ( PHP VCR )
-- bootstrapping for src/RemoteResource
-- more tests for Connection
-- supports declaration / packagist
+- tests for Config
 - better code commenting ( documentation )
+- README section on Formatters and Auth choices
