@@ -433,4 +433,10 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase {
     // it should still be listed as persisted
     $this->assertTrue($product_image->persisted());
   }
+
+  // test to make sure inflection gets stuff correct
+  public function testResourceName() {
+    $this->assertEquals('product_image', ProductImage::resourceName());
+    $this->assertEquals('product_images', ProductImage::pluralResourceName());
+  }
 }

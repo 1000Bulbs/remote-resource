@@ -25,19 +25,11 @@ class RemoteResource {
   }
 
   public static function resourceName() {
-    if (static::$resource_name) {
-      return static::$resource_name;
-    } else {
-      return Inflector::tableize( get_called_class() );
-    }
+    return static::$resource_name ?: Inflector::tableize( get_called_class() );
   }
 
   public static function pluralResourceName() {
-    if (static::$plural_resource_name) {
-      return static::$plural_resource_name;
-    } else {
-      return Inflector::pluralize( static::resourceName() );
-    }
+    return static::$plural_resource_name ?: Inflector::pluralize( static::resourceName() );
   }
 
   // GET index
