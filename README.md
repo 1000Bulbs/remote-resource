@@ -226,6 +226,5 @@ $product_image->delete("associated");
 View the [CHANGELOG.md](CHANGELOG.md "CHANGELOG.md")
 
 ### TODO
-- tests for Config
 - better code commenting ( documentation )
 - README section on Formatters and Auth choices
