@@ -14,6 +14,7 @@ use RemoteResource\Exception\ResourceInvalid;
 use RemoteResource\Exception\ClientError;
 use RemoteResource\Exception\ServerError;
 use RemoteResource\Exception\ConnectionError;
+use RemoteResource\Exception\RequestTimeout;
 use RemoteResource\Connection\Header;
 
 use Guzzle\Http\Client;
