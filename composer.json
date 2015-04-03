@@ -1,5 +1,5 @@
 {
-  "name": "RemoteResource",
+  "name": "1000Bulbs/remote-resource",
   "require": {
     "guzzlehttp/guzzle": "3.7.3"
   },
