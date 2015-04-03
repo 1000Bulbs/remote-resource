@@ -39,6 +39,10 @@ class Header {
   }
 
   private function addAuthorizationHeader() {
-    $this->addHeader('Authorization', $this->config->credentials());
+    switch ( $this->config->format() ) {
+    case 'json':
+      $this->addHeader('Authorization', $this->config->credentials());
+      break;
+    }
   }
 }
