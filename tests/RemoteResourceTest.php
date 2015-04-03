@@ -8,12 +8,48 @@ class ProductImage extends RemoteResource\RemoteResource {
   public static $credentials          = 'user:password';
 }
 
+class MockResponse {
+  public $status_code, $body;
+
+  public function getBody() {
+    return $this->body;
+  }
+
+  public function getStatusCode() {
+    return $this->status_code;
+  }
+}
+
+class MockClient {
+  private $response;
+
+  public function createRequest($verb, $path, $headers, $body) {
+    return $this;
+  }
+
+  public function setResponseParams($status_code, $body) {
+    $this->response = new MockResponse();
+    $this->response->status_code = $status_code;
+    $this->response->body = json_encode($body);
+  }
+
+  public function send() {
+    return $this->response;
+  }
+}
+
 class RemoteResourceTest extends PHPUnit_Framework_TestCase
 {
   // CREATE 422
+  /**
+   * @group current
+   * @return [type] [description]
+   */
   public function testCreate_422() {
     $attributes = array('name' => 'foo');
 
+    ProductImage::connection()->setClient(new MockClient()); // mock client
+    ProductImage::connection()->client()->setResponseParams(422, array('errors' => array("File can't be blank", "Product can't be blank")));
     $product_image = ProductImage::create($attributes);
 
     // it should return a ProductImage instance
@@ -123,9 +159,6 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
   }
 
   // CUSTOM METHOD 201
-  /**
-   * @group current
-   **/
   public function testCustomMethod_get_201() {
     $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
