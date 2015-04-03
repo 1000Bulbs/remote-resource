@@ -1,15 +1,15 @@
 <?php
-namespace RemoteResource\Connection;
+namespace RemoteResource\Pool;
 use RemoteResource\Connection;
-use RemoteResource\Config\Pool as ConfigPool;
+use RemoteResource\Pool\ConfigPool;
 
-class Pool {
+class ConnectionPool {
   private static $instances = array();
 
-  public static function getConnection( $class_name ) {
+  public static function getInstance( $class_name ) {
     if (!array_key_exists($class_name, self::$instances)) {
       self::$instances[$class_name] = new Connection(
-        ConfigPool::getConfig( $class_name )
+        ConfigPool::getInstance( $class_name )
       );
     }
 

@@ -5,8 +5,8 @@ use RemoteResource\Connection;
 use RemoteResource\Builder;
 use RemoteResource\Collection;
 use RemoteResource\Config;
-use RemoteResource\Config\Pool as ConfigPool;
-use RemoteResource\Connection\Pool as ConnectionPool;
+use RemoteResource\Pool\ConfigPool;
+use RemoteResource\Pool\ConnectionPool;
 
 use Doctrine\Common\Inflector\Inflector;
 
@@ -17,11 +17,11 @@ class RemoteResource {
   protected $id, $errors = array(), $persisted = false, $valid = false, $attributes;
 
   public static function config() {
-    return ConfigPool::getConfig( get_called_class() );
+    return ConfigPool::getInstance( get_called_class() );
   }
 
   public static function connection() {
-    return ConnectionPool::getConnection( get_called_class() );
+    return ConnectionPool::getInstance( get_called_class() );
   }
 
   public static function resourceName() {

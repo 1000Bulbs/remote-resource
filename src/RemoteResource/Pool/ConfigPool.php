@@ -1,11 +1,11 @@
 <?php
-namespace RemoteResource\Config;
+namespace RemoteResource\Pool;
 use RemoteResource\Config;
 
-class Pool {
+class ConfigPool {
   private static $instances = array();
 
-  public static function getConfig( $class_name ) {
+  public static function getInstance( $class_name ) {
     if (!array_key_exists($class_name, self::$instances)) {
       self::$instances[$class_name] = new Config(
         $class_name::$format,
