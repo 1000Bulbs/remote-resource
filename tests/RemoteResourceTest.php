@@ -8,14 +8,18 @@ class ProductImage extends RemoteResource\RemoteResource {
   public static $credentials          = 'user:password';
 }
 
-// set client to MockClient
-ProductImage::connection()->setClient(new MockClient());
+class RemoteResourceTest extends PHPUnit_Framework_TestCase {
+  protected $client;
 
-class RemoteResourceTest extends PHPUnit_Framework_TestCase
-{
+  protected function setUp() {
+    // set client to MockClient
+    ProductImage::connection()->setClient(new MockClient());
+    $this->client = ProductImage::connection()->client();
+  }
+
   // CREATE 422
   public function testCreate_422() {
-    ProductImage::connection()->client()->setResponseParams(422, array('errors' => array("File can't be blank", "Product can't be blank")));
+    $this->client->setResponseParams(422, array('errors' => array("File can't be blank", "Product can't be blank")));
 
     $attributes = array('name' => 'foo');
 
@@ -42,7 +46,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
 
   // CREATE 500
   public function testCreate_500() {
-    ProductImage::connection()->client()->setResponseParams(500);
+    $this->client->setResponseParams(500);
 
     $attributes = array('file' => 'file');
 
@@ -54,7 +58,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
 
   // CREATE 201
   public function testCreate_201() {
-    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => array('id' => 12, 'sizes_and_urls' => array())));
+    $this->client->setResponseParams(201, array('product_image' => array('id' => 12, 'sizes_and_urls' => array())));
 
     $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
@@ -88,7 +92,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
 
   // SAVE CREATE 422
   public function testSave_create_422() {
-    ProductImage::connection()->client()->setResponseParams(422, array('errors' => array("File can't be blank")));
+    $this->client->setResponseParams(422, array('errors' => array("File can't be blank")));
 
     $product_image = new ProductImage;
 
@@ -109,7 +113,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
 
   // SAVE CREATE 201
   public function testSave_create_201() {
-    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => array('id' => 2, 'sizes_and_urls' => array())));
+    $this->client->setResponseParams(201, array('product_image' => array('id' => 2, 'sizes_and_urls' => array())));
 
     $file = 'tests/fixtures/cube.png';
     $file_content_type = mime_content_type($file);
@@ -137,7 +141,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
 
   // CUSTOM METHOD 201
   public function testCustomMethod_get_201() {
-    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => array('id' => 3, 'product_id' => 12)));
+    $this->client->setResponseParams(201, array('product_image' => array('id' => 3, 'product_id' => 12)));
 
     // check output for validity
     $product_id = 12;
@@ -154,7 +158,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $product_image->product_id = 15;
     $product_image->file = $file_data_uri;
 
-    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => array('id' => 5, 'product_id' => $product_image->product_id, 'file' => $product_image->file)));
+    $this->client->setResponseParams(201, array('product_image' => array('id' => 5, 'product_id' => $product_image->product_id, 'file' => $product_image->file)));
     $product_image->save(); // created
 
     $string_too_long = 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
@@ -165,7 +169,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
 
     $product_image->name = $string_too_long;
 
-    ProductImage::connection()->client()->setResponseParams(422, array('errors' => array('Name is too long (maximum is 255 characters)')));
+    $this->client->setResponseParams(422, array('errors' => array('Name is too long (maximum is 255 characters)')));
     $product_image->save(); // updated
 
     // the product image should not be valid
@@ -192,12 +196,12 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $product_image->product_id = 15;
     $product_image->file = $file_data_uri;
 
-    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => array('id' => 5, 'product_id' => $product_image->product_id, 'file' => $product_image->file)));
+    $this->client->setResponseParams(201, array('product_image' => array('id' => 5, 'product_id' => $product_image->product_id, 'file' => $product_image->file)));
     $product_image->save(); // created
 
     $product_image->name = 'cool new name';
 
-    ProductImage::connection()->client()->setResponseParams(204, array('product_image' => array('id' => 5, 'name' => 'cool new name')));
+    $this->client->setResponseParams(204, array('product_image' => array('id' => 5, 'name' => 'cool new name')));
     $product_image->save(); // updated
 
     // the product image should be valid
@@ -215,7 +219,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
 
   // ALL 200
   public function testAll_200() {
-    ProductImage::connection()->client()->setResponseParams(200, array('product_images' => array()));
+    $this->client->setResponseParams(200, array('product_images' => array()));
     $product_images = ProductImage::all();
 
     // it should return a RemoteResource\Collection instance
@@ -224,7 +228,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
 
   // WHERE 200
   public function testWhere_200() {
-    ProductImage::connection()->client()->setResponseParams(200, array('product_images' => array(array('id' => 5, 'product_id' => 15), array('id' => 6, 'product_id' => 15))));
+    $this->client->setResponseParams(200, array('product_images' => array(array('id' => 5, 'product_id' => 15), array('id' => 6, 'product_id' => 15))));
 
     $product_images = ProductImage::where(array('product_id' => 15));
 
@@ -247,7 +251,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
 
   // WHERE noMatches
   public function testWhere_noMatches() {
-    ProductImage::connection()->client()->setResponseParams(200, array('product_images' => array()));
+    $this->client->setResponseParams(200, array('product_images' => array()));
 
     $product_images = ProductImage::where(array());
 
@@ -267,21 +271,21 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri, 'id' => 10);
 
-    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => $attributes));
+    $this->client->setResponseParams(201, array('product_image' => $attributes));
     $product_image = ProductImage::create($attributes);
 
-    ProductImage::connection()->client()->setResponseParams(204);
+    $this->client->setResponseParams(204);
     $result = $product_image->destroy();
 
     // it destroys the product_image
-    ProductImage::connection()->client()->setResponseParams(404);
+    $this->client->setResponseParams(404);
     $this->setExpectedException('RemoteResource\Exception\ResourceNotFound');
     ProductImage::find($product_image->id());
   }
 
   // DESTROY 404
   public function testDestroy_404() {
-    ProductImage::connection()->client()->setResponseParams(404);
+    $this->client->setResponseParams(404);
 
     $product_image = new ProductImage;
 
@@ -293,7 +297,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
 
   // FIND 404
   public function testFind_404() {
-    ProductImage::connection()->client()->setResponseParams(404);
+    $this->client->setResponseParams(404);
 
     // it should throw a RemoteResourceResourceNotFound
     $this->setExpectedException('RemoteResource\Exception\ResourceNotFound');
@@ -309,11 +313,11 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri, 'id' => 2);
-    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => $attributes));
+    $this->client->setResponseParams(201, array('product_image' => $attributes));
 
     $product_image_created = ProductImage::create($attributes);
 
-    ProductImage::connection()->client()->setResponseParams(200, array('product_image' => array('id' => $product_image_created->id(), 'product_id' => 15)));
+    $this->client->setResponseParams(200, array('product_image' => array('id' => $product_image_created->id(), 'product_id' => 15)));
     $product_image_found = ProductImage::find($product_image_created->id());
 
     // it shound return a ProductImage instance
@@ -342,13 +346,13 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri, 'id' => 5, 'name' => 'cool name');
-    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => $attributes));
+    $this->client->setResponseParams(201, array('product_image' => $attributes));
 
     $product_image = ProductImage::create($attributes);
     $attributes = $product_image->attributes();
     $previous_name_value = $attributes["name"];
 
-    ProductImage::connection()->client()->setResponseParams(204);
+    $this->client->setResponseParams(204);
     $result = $product_image->updateAttributes(array('name' => 'new name'));
 
     // it should return _true_
@@ -377,13 +381,13 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri, 'id' => 5);
-    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => $attributes));
+    $this->client->setResponseParams(201, array('product_image' => $attributes));
     $product_image = ProductImage::create($attributes);
 
     // it should throw a RemoteResourceServerError
     $this->setExpectedException('RemoteResource\Exception\ServerError');
 
-    ProductImage::connection()->client()->setResponseParams(500);
+    $this->client->setResponseParams(500);
     $result = $product_image->updateAttributes(array('file' => 'file'));
   }
 
@@ -407,7 +411,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $file_data_uri = "data:".$file_content_type.";base64,".$file_data;
 
     $attributes = array('product_id' => 15, 'file' => $file_data_uri, 'id' => 3);
-    ProductImage::connection()->client()->setResponseParams(201, array('product_image' => $attributes));
+    $this->client->setResponseParams(201, array('product_image' => $attributes));
     $product_image = ProductImage::create($attributes);
 
     $string_too_long = 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
@@ -416,7 +420,7 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase
     $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
     $string_too_long = $string_too_long . 'llllllllllllllllllllllllllllllllllllllllllllllllllll';
 
-    ProductImage::connection()->client()->setResponseParams(422, array('errors' => array('Name is too long (maximum is 255 characters)')));
+    $this->client->setResponseParams(422, array('errors' => array('Name is too long (maximum is 255 characters)')));
     $result = $product_image->updateAttributes(array('name' => $string_too_long));
 
     // it should return _false_
