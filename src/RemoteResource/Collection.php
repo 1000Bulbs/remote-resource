@@ -7,7 +7,7 @@ class Collection implements \Iterator {
   public function __construct($resource_class, $response) {
 
      foreach ($response[$resource_class::pluralResourceName()] as $attributes) {
-       $resource = Builder::buildForCollection(new $resource_class, $attributes);
+       $resource = Builder::build(new $resource_class, $attributes);
        array_push($this->_collection, $resource);
      }
   }
