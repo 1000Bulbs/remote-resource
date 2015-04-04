@@ -4,8 +4,7 @@ namespace RemoteResource;
 class Collection implements \Iterator {
   private $_collection = array();
 
-  public function __construct($resource_instance, $response) {
-    $resource_class = get_class($resource_instance);
+  public function __construct($resource_class, $response) {
 
      foreach ($response[$resource_class::pluralResourceName()] as $attributes) {
        $resource = Builder::buildForCollection(new $resource_class, $attributes);

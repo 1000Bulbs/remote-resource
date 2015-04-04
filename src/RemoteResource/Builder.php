@@ -2,12 +2,12 @@
 namespace RemoteResource;
 
 class Builder {
-  public static function build($resource, $response) {
+  public static function build($resource, $attributes) {
     $resource_class = get_class($resource);
 
     $resource->setPersisted(true);
-    $resource->setId($response[$resource_class::resourceName()]["id"]);
-    $resource->setAttributes(array_merge($resource->attributes(), $response[$resource_class::resourceName()]));
+    $resource->setId($attributes["id"]);
+    $resource->setAttributes(array_merge($resource->attributes(), $attributes));
     $resource->setErrors(array());
 
     return $resource;

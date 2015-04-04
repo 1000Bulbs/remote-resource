@@ -35,21 +35,21 @@ class RemoteResource {
   // GET index
   public static function all() {
     $response = self::connection()->get( static::$site );
-    $remote_resource_collection = new Collection(new static, $response);
+    $remote_resource_collection = new Collection(get_called_class(), $response);
     return $remote_resource_collection;
   }
 
   // GET index w/ params
   public static function where($attributes = array()) {
     $response = self::connection()->get( self::wherePath(static::$site, $attributes) );
-    $remote_resource_collection = new Collection(new static, $response);
+    $remote_resource_collection = new Collection(get_called_class(), $response);
     return $remote_resource_collection;
   }
 
   // GET show
   public static function find($id) {
     $response = self::connection()->get( static::$site."/".$id );
-    $resource = Builder::build(new static, $response);
+    $resource = Builder::build(new static, $response[static::resourceName()]);
     return $resource;
   }
 
@@ -58,7 +58,7 @@ class RemoteResource {
 
     try {
       $response = self::connection()->post( static::$site, array(static::resourceName() => $attributes) );
-      $resource = Builder::build(new static, $response);
+      $resource = Builder::build(new static, $response[static::resourceName()]);
     } catch ( Exception\ResourceInvalid $e ) {
       $resource = new static($attributes);
       $resource->errors = $e->response["errors"];
