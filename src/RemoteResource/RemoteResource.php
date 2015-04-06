@@ -32,6 +32,11 @@ class RemoteResource {
     return static::$plural_resource_name ?: Inflector::pluralize( static::resourceName() );
   }
 
+  // use to assign $site dynamically
+  public static function setSite($site) {
+    static::$site = $site;
+  }
+
   // GET index
   public static function all() {
     $response = self::connection()->get( static::$site );
