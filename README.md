@@ -65,7 +65,7 @@ $product_image->name = 'rainbow cube';
 $product_image->save();
 ```
 
-As with ActiveResource, attributes are accessible as methods. If an attribute comes back from the remote API which has already been set on the resource instance, it will be overwritten to reflect the persisted value.
+If an attribute comes back from the remote API which has already been set on the resource instance, it will be overwritten to reflect the persisted value.
 ```
 $product_image = ProductImage::find(15);
 echo $product_image->name; // "rainbow cube"
