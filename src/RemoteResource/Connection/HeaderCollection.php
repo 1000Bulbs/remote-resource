@@ -3,7 +3,7 @@
 namespace RemoteResource\Connection;
 use RemoteResource\Connection\Header;
 
-class HeaderCollection implements \Iterator {
+class HeaderCollection implements \Iterator, \Countable {
   private $_collection = array();
 
   public function __construct(array $headers = null) {

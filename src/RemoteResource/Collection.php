@@ -1,7 +1,7 @@
 <?php
 namespace RemoteResource;
 
-class Collection implements \Iterator {
+class Collection implements \Iterator, \Countable {
   private $_collection = array();
 
   public function __construct($resource_class, $response) {
