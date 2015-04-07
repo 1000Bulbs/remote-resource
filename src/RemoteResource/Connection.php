@@ -15,7 +15,7 @@ use RemoteResource\Exception\ClientError;
 use RemoteResource\Exception\ServerError;
 use RemoteResource\Exception\ConnectionError;
 use RemoteResource\Exception\RequestTimeout;
-use RemoteResource\Connection\Header;
+use RemoteResource\Connection\Request;
 
 use Guzzle\Http\Client;
 
@@ -26,8 +26,8 @@ class Connection {
   public function __construct(Config $config) {
     $this->config = $config;
     $this->formatter = $config->formatter();
-    $header = new Connection\Header($config);
-    $this->headers = $header->getHeaders();
+    $req = new Request($config);
+    $this->headers = $req->getHeaders();
   }
 
   public function get($path) {

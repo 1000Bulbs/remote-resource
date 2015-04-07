@@ -22,7 +22,6 @@ class ConnectionTest extends PHPUnit_Framework_TestCase
 
   public function testHeaders()
   {
-
     $this->assertEquals(
       $this->connection->headers,
       array(
