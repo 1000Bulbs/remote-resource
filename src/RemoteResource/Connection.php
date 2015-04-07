@@ -26,8 +26,7 @@ class Connection {
   public function __construct(Config $config) {
     $this->config = $config;
     $this->formatter = $config->formatter();
-    $req = new Request($config);
-    $this->headers = $req->getHeaders();
+    $this->headers = $config->headers();
   }
 
   public function get($path) {

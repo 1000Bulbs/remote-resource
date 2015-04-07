@@ -1,9 +1,11 @@
 <?php
 namespace RemoteResource;
 use RemoteResource\Formatter\Json;
+use RemoteResource\Connection\HeaderCollection;
+use RemoteResource\Connection\Header;
 
 class Config {
-  private $auth_type, $credentials, $format, $formatter,
+  private $auth_type, $credentials, $format, $formatter, $headers,
           $supported_auth_types = array('basic', 'none'),
           $supported_formats    = array('json'),
           $default_auth_type    = 'none',
@@ -14,6 +16,7 @@ class Config {
     $this->setAuthType($auth_type);
     $this->setCredentials($credentials);
     $this->setFormatter($this->format);
+    $this->setHeaders();
   }
 
   public function credentials() {
@@ -34,6 +37,10 @@ class Config {
 
   public function formatter() {
     return $this->formatter;
+  }
+
+  public function headers() {
+    return $this->headers;
   }
 
   // ----------------------------
@@ -71,6 +78,20 @@ class Config {
     } else {
       throw new \Exception('format type '.$this->format.' not supported');
     }
+  }
+
+  private function setHeaders() {
+    $headers= new HeaderCollection();
+
+    if ($this->format() == 'json') {
+      $headers->add( new Header('Content-Type', 'application/json') );
+    }
+
+    if ($this->authType() == 'basic') {
+      $headers->add( new Header('Authorization', $this->credentials()) );
+    }
+
+    $this->headers = $headers;
   }
 
   private function setCredentials($credentials = null) {
