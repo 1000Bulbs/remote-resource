@@ -64,8 +64,6 @@ class Connection {
   // ____________________________
 
   private function sendRequest($verb, $path, $body = null) {
-    if ($body) $body = $this->formatter->formatRequest($body);
-
     $request = $this->client()->createRequest($verb, $path, $this->headers, $body);
     $response = $this->handleResponse( $request->send() );
     return $response;
