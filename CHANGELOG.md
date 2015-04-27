@@ -1,6 +1,6 @@
 #Changelog
 
-###[0.2.2] - 2015-04-14
+###[0.2.3] - 2015-04-14
 - [bug] fixed a formatting issue where a response was being json encoded, then json encoded again within Guzzle
 
 ###[0.2.1] - 2015-04-02
