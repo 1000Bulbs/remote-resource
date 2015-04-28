@@ -1,13 +1,13 @@
 <?php
+
 use RemoteResource\Config;
 use RemoteResource\Connection;
 
-class ConnectionTest extends PHPUnit_Framework_TestCase
-{
+class ConnectionTest extends PHPUnit_Framework_TestCase {
+
   protected $config, $connection, $client;
 
-  protected function setUp()
-  {
+  protected function setUp() {
     $this->config = new RemoteResource\Config(
       $format      = 'json',
       $auth_type   = 'basic',
@@ -20,8 +20,7 @@ class ConnectionTest extends PHPUnit_Framework_TestCase
     $this->client = $this->connection->client();
   }
 
-  public function testHeaders()
-  {
+  public function testHeaders() {
     $this->assertEquals(
       $this->connection->headers->toArray(),
       array(

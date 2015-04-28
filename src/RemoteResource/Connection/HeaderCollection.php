@@ -1,11 +1,15 @@
 <?php
 
 namespace RemoteResource\Connection;
+
 use RemoteResource\Connection\Header;
 
 class HeaderCollection implements \Iterator, \Countable {
   private $_collection = array();
 
+  /**
+   * @param array|null $headers array of RemoteResource\Connection\Header objects
+   */
   public function __construct(array $headers = null) {
     if (!$headers || empty($headers)) return;
 
@@ -55,6 +59,10 @@ class HeaderCollection implements \Iterator, \Countable {
     return (empty($this->_collection) ? null : $this->_collection[count($this->_collection)-1]);
   }
 
+  /**
+   * This is needed to convert the HeaderCollection into a guzzle-consumable array of headers
+   * @return array
+   */
   public function toArray() {
     $array = array();
     foreach ($this->_collection as $header) {
