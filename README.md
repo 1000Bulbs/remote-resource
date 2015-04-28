@@ -127,7 +127,7 @@ $product_image->save();
 
 Expectations on how the remote API is configured mirrors ActiveResource expectations. I will list those expectations here, since they aren't clearly documented for ActiveResource. __It is necessary for the remote API you are accessing to fulfill the HTTP, status codes, and JSON responses from the interface below, unless you do not plan (or do not need) to use the associated methods.__
 
-```php
+```
 method    HTTP                                 status        expected JSON response
 _______________________________________________________________________________________
 create    POST /remote_resource_path/          201           {'remote_resource': {}}
