@@ -63,13 +63,18 @@ class Connection {
   // _____ PRIVATE METHODS ______
   // ____________________________
 
+  /**
+   * [sendRequest description]
+   * @param  string $verb HTTP verb: GET, POST, PUT, PATCH, DELETE, etc.
+   * @param  [type] $path [description]
+   * @param  [type] $body [description]
+   * @return [type]       [description]
+   * @throws  RemoteResource\Exception corresponds to HTTP status returned
+   */
   private function sendRequest($verb, $path, $body = null) {
     $request = $this->client()->createRequest($verb, $path, $this->headers, $body);
-    $response = $this->handleResponse( $request->send() );
-    return $response;
-  }
+    $response = $request->send();
 
-  private function handleResponse($response) {
     $decoded_body = $this->formatter->formatResponse( $response->getBody() );
 
     if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 400) {
