@@ -226,19 +226,13 @@ array              delete    ( $path )
 ```php
 // requests GET "http://example.com/product_images/5/clone/"
 ProductImage::get("5/clone");
-```
 
-```php
 // requests POST "http://example.com/product_images/5/clone/"
 ProductImage::post("5/clone", array("clone_to" => 15));
-```
 
-```php
 // requests PATCH "http://example.com/product_images/12/increment/"
 $product_image->patch("increment");
-```
 
-```php
 // requests DELETE "http://example.com/product_images/12/associated/"
 $product_image->delete("associated");
 ```
