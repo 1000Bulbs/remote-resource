@@ -243,7 +243,7 @@ View the [CHANGELOG.md](CHANGELOG.md "CHANGELOG.md")
 
 ### TODO
 
-- README section on Formatters and Auth choices
+- README section on Formatters and Auth choices and Installation
 - http_build_query may have problems with more complex query string requirements
 - handle timeouts gracefully
 - handle data URI conversion of files
