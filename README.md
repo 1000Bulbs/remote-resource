@@ -1,12 +1,15 @@
 # RemoteResource
+
 Supports PHP 5.3.2 and up.
 
 ### Philosophy
+
 RemoteResource adopts most of the public API of ActiveResource for Rails and enforces many of the same expectations.
 
 ### Documentation
 
 ##### Available Instance Methods
+
 ```
 returns     method( args )
 _____________________________________________________
@@ -32,12 +35,14 @@ RemoteResourceCollection     all()
 ```
 
 ### Usage
+
 ##### Creating a Model
+
 Extend RemoteResource\RemoteResource, and set static $site.
 $resource_name and $plural_resource_name properties are optional, and may be set where the name of the class does not mirror the name of the remote resource.
 Configuration is set on a per-resource basis, designated by the $format, $auth_type, and $credentials properties.
 
-```
+```php
 class ProductImage extends RemoteResource\RemoteResource {
   public static $site                 = "http://example.com/api/product_images";
   public static $resource_name        = "product_image";
@@ -49,16 +54,18 @@ class ProductImage extends RemoteResource\RemoteResource {
 ```
 
 ##### Simplest Model
-```
+
+```php
 class ProductImage extends RemoteResource\RemoteResource {
   public static $site = "http://example.com/api/product_images";
 }
 ```
 
 ##### Attribute Assignment
+
 Dynamically assigned attributes are added to the attributes which will be sent over on save.
 
-```
+```php
 $product_image = new ProductImage;
 $product_image->file = $file;
 $product_image->name = 'rainbow cube';
@@ -66,52 +73,61 @@ $product_image->save();
 ```
 
 If an attribute comes back from the remote API which has already been set on the resource instance, it will be overwritten to reflect the persisted value.
-```
+
+```php
 $product_image = ProductImage::find(15);
 echo $product_image->name; // "rainbow cube"
 echo $product_image->sizes_and_urls[30]; // "https://path/to/cdn/image/sjiEFzciA.png"
 ```
 
 ##### Create
-```
+
+```php
 $product_image = ProductImage::create($attributes);
 ```
 
 ##### Where
-```
+
+```php
 $product_images = ProductImage::where( array('product_id' => 12) );
 ```
 
 ##### Find
-```
+
+```php
 $product_image = ProductImage::find(15);
 ```
 ##### All
-```
+
+```php
 $product_images = ProductImage::all();
 ```
 
 ##### Update
+
 As with ActiveResource, the update() method is reserved for internal use. use updateAttributes() instead.
 
-```
+```php
 $product_image->updateAttributes( array('product_id' => 12) );
 ```
 
 ##### Destroy
-```
+
+```php
 $product_image->destroy();
 ```
 
 ##### Save
-```
+
+```php
 $product_image->save();
 ```
 
 ### Expectations / Assumptions
+
 Expectations on how the remote API is configured mirrors ActiveResource expectations. I will list those expectations here, since they aren't clearly documented for ActiveResource. __It is necessary for the remote API you are accessing to fulfill the HTTP, status codes, and JSON responses from the interface below, unless you do not plan (or do not need) to use the associated methods.__
 
-```
+```php
 method    HTTP                                 status        expected JSON response
 _______________________________________________________________________________________
 create    POST /remote_resource_path/          201           {'remote_resource': {}}
@@ -130,6 +146,7 @@ destroy   DELETE /remote_resource_path/:id     204           nil
 ```
 
 ### Exceptions
+
 Familiarize yourself with RemoteResource Exceptions. __Exceptions are evaluated in the order presented here.__
 
 ```
@@ -150,7 +167,7 @@ unknown             RemoteResource\Exception\ConnectionError
 
 The response that triggered the exception is stored, and can be accessed.
 
-```
+```php
 try {
 } catch ( RemoteResource\Exception\ResourceNotFound $e) {
   $response = $e->response;
@@ -158,9 +175,10 @@ try {
 ```
 
 ### Checking Validity
+
 In order to determine whether or not a resource was correctly created, check the validity of the resource.
 
-```
+```php
 $product_image = ProductImage::create($attributes);
 if ( $product_image->valid() ) {
   // success
@@ -170,9 +188,10 @@ if ( $product_image->valid() ) {
 Validity is determined by whether or not errors were generated for the resource. A resource is considered valid when it has no errors. This does not necessarily mean that the resource has been persisted. Check the persisted() method for this information.
 
 ### RemoteResource\Collection
+
 A RemoteResource\Collection is a collection of RemoteResource objects. The RemoteResource\Collection object implements the Iterator interface, and can therefore be treated as a PHP collection.
 
-```
+```php
 $remote_resource_collection = ProductImage::all();
 
 foreach($remote_resource_collection as $remote_resource) {
@@ -181,6 +200,7 @@ foreach($remote_resource_collection as $remote_resource) {
 ```
 
 ##### RemoteResource\Collection methods of interest
+
 ```
 returns                      method( args )
 ____________________________________________________________
@@ -190,6 +210,7 @@ RemoteResource               last()
 ```
 
 ##### Custom Methods
+
 RemoteResource allows you to go off of the rails of RESTful convention. Know that __responses will be returned as arrays, and not as RemoteResource objects__.
 
 ```
@@ -202,30 +223,32 @@ array              patch     ( $path, $attributes=array() )
 array              delete    ( $path )
 ```
 
-```
+```php
 // requests GET "http://example.com/product_images/5/clone/"
 ProductImage::get("5/clone");
 ```
 
-```
+```php
 // requests POST "http://example.com/product_images/5/clone/"
 ProductImage::post("5/clone", array("clone_to" => 15));
 ```
 
-```
+```php
 // requests PATCH "http://example.com/product_images/12/increment/"
 $product_image->patch("increment");
 ```
 
-```
+```php
 // requests DELETE "http://example.com/product_images/12/associated/"
 $product_image->delete("associated");
 ```
 
 ### Changelog
+
 View the [CHANGELOG.md](CHANGELOG.md "CHANGELOG.md")
 
 ### TODO
+
 - README section on Formatters and Auth choices
 - http_build_query may have problems with more complex query string requirements
 - handle timeouts gracefully
