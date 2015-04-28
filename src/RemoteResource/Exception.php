@@ -8,8 +8,10 @@ class Exception extends \Exception {
   public $response;
 
   /**
-   * The exception stores the response for reference when handling errors
-   * @param mixec          $response the response object
+   * The exception stores the response for reference,
+   * helps when handling errors.
+   * 
+   * @param mixed          $response the response object
    * @param string         $message  the exception message
    * @param integer        $code     an error code
    * @param Exception|null $previous usually null
