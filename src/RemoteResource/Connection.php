@@ -26,8 +26,7 @@ class Connection {
   public function __construct(Config $config) {
     $this->config = $config;
     $this->formatter = $config->formatter();
-    $req = new Request($config);
-    $this->headers = $req->getHeaders();
+    $this->headers = $config->headers();
   }
 
   public function get($path) {
@@ -65,8 +64,6 @@ class Connection {
   // ____________________________
 
   private function sendRequest($verb, $path, $body = null) {
-    if ($body) $body = $this->formatter->formatRequest($body);
-
     $request = $this->client()->createRequest($verb, $path, $this->headers, $body);
     $response = $this->handleResponse( $request->send() );
     return $response;

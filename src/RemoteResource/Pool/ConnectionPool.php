@@ -1,9 +1,10 @@
 <?php
 namespace RemoteResource\Pool;
+use RemoteResource\Pool;
 use RemoteResource\Connection;
 use RemoteResource\Pool\ConfigPool;
 
-class ConnectionPool {
+class ConnectionPool implements Pool {
   private static $instances = array();
 
   public static function getInstance( $class_name ) {
