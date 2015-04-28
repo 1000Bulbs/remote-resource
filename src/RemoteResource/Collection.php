@@ -4,6 +4,11 @@ namespace RemoteResource;
 class Collection implements \Iterator, \Countable {
   private $_collection = array();
 
+  /**
+   * Create a Collection of RemoteResources
+   * @param string $resource_class class name
+   * @param array $response        array response from guzzle
+   */
   public function __construct($resource_class, $response) {
      foreach ($response[$resource_class::pluralResourceName()] as $attributes) {
        $resource = Builder::build(new $resource_class, $attributes);
