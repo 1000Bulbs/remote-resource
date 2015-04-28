@@ -226,5 +226,7 @@ $product_image->delete("associated");
 View the [CHANGELOG.md](CHANGELOG.md "CHANGELOG.md")
 
 ### TODO
-- better code commenting ( documentation )
 - README section on Formatters and Auth choices
+- http_build_query may have problems with more complex query string requirements
+- handle timeouts gracefully
+- handle data URI conversion of files
