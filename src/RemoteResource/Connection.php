@@ -19,32 +19,65 @@ use RemoteResource\Connection\Request;
 
 use Guzzle\Http\Client;
 
+/**
+ * The connection class sits on top of the (usually) Guzzle HTTP client and
+ * provides us an easy to use wrapper.
+ */
 class Connection {
   public $headers;
   private $client, $config, $formatter;
 
+  /**
+   * @param Config $config the configuration object for this RemoteResource
+   */
   public function __construct(Config $config) {
     $this->config = $config;
     $this->formatter = $config->formatter();
     $this->headers = $config->headers();
   }
 
+  /**
+   * Send a GET request to $path
+   * @param  string $path url for the request
+   * @return array        decoded response body
+   */
   public function get($path) {
     return $this->sendRequest( 'GET', $path );
   }
 
+  /**
+   * Send a POST request to $path, with $attributes in the body
+   * @param  string $path       url for the request
+   * @param  array  $attributes attributes to pass in the request body
+   * @return array              decoded response body
+   */
   public function post($path, $attributes = array()) {
     return $this->sendRequest( 'POST', $path, $attributes );
   }
 
+  /**
+   * Send a PATCH request to $path, with $attributes in the body
+   * @param  string $path       url for the request
+   * @param  array  $attributes attributes for the resource
+   * @return array              decoded response body
+   */
   public function patch($path, $attributes = array()) {
     return $this->sendRequest( 'PATCH', $path, $attributes );
   }
 
+  /**
+   * Send a DELETE request to $path
+   * @param  string $path url for the request
+   * @return array        decoded response body
+   */
   public function delete($path) {
     return $this->sendRequest( 'DELETE', $path );
   }
 
+  /**
+   * Init client if it's not already, return client
+   * @return mixed HTTP Client
+   */
   public function client() {
     if (!$this->client) {
       $client = new Client;
@@ -55,6 +88,10 @@ class Connection {
     return $this->client;
   }
 
+  /**
+   * Mostly for mocking purposes
+   * @param mixed $client the HTTP client to use, default is Guzzle (it would have to conform to guzzle's API)
+   */
   public function setClient($client) {
     $this->client = $client;
   }
@@ -64,12 +101,13 @@ class Connection {
   // ____________________________
 
   /**
-   * [sendRequest description]
+   * Sends the request via guzzle and returns the needed parts of the response, or throws an
+   * exception.
    * @param  string $verb HTTP verb: GET, POST, PUT, PATCH, DELETE, etc.
-   * @param  [type] $path [description]
-   * @param  [type] $body [description]
-   * @return [type]       [description]
-   * @throws  RemoteResource\Exception corresponds to HTTP status returned
+   * @param  string $path resource url
+   * @param  array  $body array of properties to be converted to JSON/XML/etc
+   * @return array        decoded body
+   * @throws RemoteResource\Exception corresponds to HTTP status returned
    */
   private function sendRequest($verb, $path, $body = null) {
     $request = $this->client()->createRequest($verb, $path, $this->headers, $body);
