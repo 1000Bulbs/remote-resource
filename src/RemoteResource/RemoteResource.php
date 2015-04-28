@@ -10,24 +10,48 @@ use RemoteResource\Pool\ConnectionPool;
 
 use Doctrine\Common\Inflector\Inflector;
 
+/**
+ * The main class, most of what you might concern yourself with is here.
+ * Your RemoteResource models will extend this
+ */
 class RemoteResource {
-  public static $site, $resource_name, $plural_resource_name,
-                $format, $auth_type, $credentials;
+  public static $site, 
+                $resource_name, 
+                $plural_resource_name,
+                $format, 
+                $auth_type, 
+                $credentials;
 
-  protected $id, $errors = array(), $persisted = false, $valid = false, $attributes;
+  protected $id, 
+            $errors = array(), 
+            $persisted = false, 
+            $valid = false, 
+            $attributes;
 
+  /**
+   * @return Config Config instance for this resource
+   */
   public static function config() {
     return ConfigPool::getInstance( get_called_class() );
   }
 
+  /**
+   * @return Connection Connection instance for this resource
+   */
   public static function connection() {
     return ConnectionPool::getInstance( get_called_class() );
   }
 
+  /**
+   * @return string Resource singular name
+   */
   public static function resourceName() {
     return static::$resource_name ?: Inflector::tableize( get_called_class() );
   }
 
+  /**
+   * @return string Resource plural name
+   */
   public static function pluralResourceName() {
     return static::$plural_resource_name ?: Inflector::pluralize( static::resourceName() );
   }
@@ -166,7 +190,7 @@ class RemoteResource {
   /**
    * Update attributes
    * @param  array $attributes array of attributes to update
-   * @return boolean           whether save was successful
+   * @return bool              whether save was successful
    */
   public function updateAttributes($attributes) {
     if (!$this->persisted) throw new \Exception("Attempted update: RemoteResource not persisted");
@@ -185,7 +209,7 @@ class RemoteResource {
 
   /**
    * POST | PATCH save
-   * @return boolean Whether save (update or create) was successful
+   * @return bool  Whether save (update or create) was successful
    */
   public function save() {
     if ($this->persisted) {
@@ -212,14 +236,18 @@ class RemoteResource {
   // _____ PRIVATE METHODS ______
   // ____________________________
 
-  // POST create
+  /**
+   * @return bool validity of this resource instance
+   */
   private function instanceCreate() {
     $resource_to_merge = self::create($this->attributes);
     Builder::merge($this, $resource_to_merge);
     return $this->valid() ? true : false;
   }
 
-  // PATCH update
+  /**
+   * @return bool whether the resource was successfully updated
+   */
   private function update() {
     try {
       $response = self::connection()->patch( static::$site."/".$this->id, array( static::resourceName() => $this->attributes ) );
@@ -232,6 +260,11 @@ class RemoteResource {
     return $updated;
   }
 
+  /**
+   * @param  string $path       base url
+   * @param  array  $attributes associative array of query parameters
+   * @return string             the resulting path
+   */
   private static function wherePath($path, $attributes) {
     if (!empty($attributes)) {
       $path = $path."?".http_build_query($attributes);
