@@ -21,11 +21,14 @@ class Builder {
   /**
    * @param  RemoteResource $resource          The base resource
    * @param  RemoteResource $resource_to_merge The resource to merge
+   * @return RemoteResource                    The merged result
    */
   public static function merge($resource, $resource_to_merge) {
     $resource->setId($resource_to_merge->id());
     $resource->setAttributes(array_merge($resource->attributes(), $resource_to_merge->attributes()));
     $resource->setPersisted($resource_to_merge->persisted());
     $resource->setErrors($resource_to_merge->errors());
+
+    return $resource;
   }
 }
