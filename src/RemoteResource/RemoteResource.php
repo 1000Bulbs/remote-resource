@@ -57,14 +57,6 @@ class RemoteResource {
   }
 
   /**
-   * Sometimes you need to set the site dynamically after the model has been autoloaded
-   * @param string $site The base URL to be used for this resource
-   */
-  public static function setSite($site) {
-    static::$site = $site;
-  }
-
-  /**
    * GET index
    * @return Collection   An iteratable collection of RemoteResource objects
    */

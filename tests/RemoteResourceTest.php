@@ -36,6 +36,9 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(ProductImage::$site, "http://localhost:3000/api/product_images");
     $this->assertEquals(StaticPage::$site, "http://localhost:3001/api/static_pages");
     $this->assertEquals(Brand::$site, "http://localhost:3002/api/brands");
+    $this->assertEquals(ProductImage::$site, "http://localhost:3000/api/product_images");
+    $this->assertEquals(StaticPage::$site, "http://localhost:3001/api/static_pages");
+    $this->assertEquals(Brand::$site, "http://localhost:3002/api/brands");
 
     // resource names
     $this->assertEquals(ProductImage::resourceName(), 'product_image');

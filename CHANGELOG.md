@@ -1,5 +1,9 @@
 #Changelog
 
+###[0.2.4] - 2015-04-29
+- [bug] removed the setSite method on RemoteResource. The method was problematic because it is setting a static property against RemoteResource itself, which will overwrite the path globally, affecting all sub classes.
+  From now on, we should not manipulate the static properties meant to be set against the sub-classes anywhere in the RemoteResource class.
+
 ###[0.2.3] - 2015-04-14
 - [bug] fixed a formatting issue where a response was being json encoded, then json encoded again within Guzzle
 
