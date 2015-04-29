@@ -487,10 +487,4 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('product_image', ProductImage::resourceName());
     $this->assertEquals('product_images', ProductImage::pluralResourceName());
   }
-
-  // test adding a dynamic site name
-  public function testSetDynamicSite() {
-    ProductImage::setSite("localhost"."/whatever");
-    $this->assertEquals('localhost/whatever', ProductImage::$site);
-  }
 }
