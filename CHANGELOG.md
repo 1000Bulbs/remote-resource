@@ -1,5 +1,8 @@
 #Changelog
 
+###[0.2.6] - 2015-05-14
+- [bug] Connection headers were not being transformed into a map. This meant that the Guzzle Client wasnt able to process the headers properly.
+
 ###[0.2.4] - 2015-04-29
 - [bug] removed the setSite method on RemoteResource. The method was problematic because it is setting a static property against RemoteResource itself, which will overwrite the path globally, affecting all sub classes.
   From now on, we should not manipulate the static properties meant to be set against the sub-classes anywhere in the RemoteResource class.
