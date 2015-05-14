@@ -33,7 +33,7 @@ class Connection {
   public function __construct(Config $config) {
     $this->config = $config;
     $this->formatter = $config->formatter();
-    $this->headers = $config->headers();
+    $this->headers = $config->headers()->toArray();
   }
 
   /**

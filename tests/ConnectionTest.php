@@ -22,7 +22,7 @@ class ConnectionTest extends PHPUnit_Framework_TestCase {
 
   public function testHeaders() {
     $this->assertEquals(
-      $this->connection->headers->toArray(),
+      $this->connection->headers,
       array(
         'Content-Type' => 'application/json',
         'Authorization' => 'Basic '.base64_encode('user:password')
