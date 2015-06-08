@@ -1,5 +1,8 @@
 #Changelog
 
+###[0.2.10] - 2015-06-08
+- [bug] GlobalConfig setLogPath takes log_path param
+
 ###[0.2.9] - 2015-06-08
 - [logging] Non-error logging now logs to the server.
 - [feature] Global Configuration options now settable: app_name, log_path
