@@ -36,7 +36,7 @@ class RemoteResource {
    */
   public static function logger() {
     if (!self::$logger) {
-      self::$logger = new Logger();
+      self::$logger = new Logger('remote-resource');
     }
 
     return self::$logger;
