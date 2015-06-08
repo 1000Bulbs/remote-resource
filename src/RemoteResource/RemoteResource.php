@@ -7,6 +7,7 @@ use RemoteResource\Collection;
 use RemoteResource\Config;
 use RemoteResource\Pool\ConfigPool;
 use RemoteResource\Pool\ConnectionPool;
+use RemoteResource\Logger;
 
 use Doctrine\Common\Inflector\Inflector;
 
@@ -22,11 +23,24 @@ class RemoteResource {
                 $auth_type, 
                 $credentials;
 
+  private static $logger;
+
   protected $id, 
             $errors = array(), 
             $persisted = false, 
             $valid = false, 
             $attributes;
+
+  /**
+   * @return global Logger for RemoteResource
+   */
+  public static function logger() {
+    if (!self::$logger) {
+      self::$logger = new Logger();
+    }
+
+    return self::$logger;
+  }
 
   /**
    * @return Config Config instance for this resource
