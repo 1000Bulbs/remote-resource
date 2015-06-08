@@ -16,52 +16,66 @@ class Logger {
       $this->new_relic->pushHandler(new NewRelicHandler());
     }
 
-    $this->local_log = new Monolog($app_name);
-    $this->local_log->pushHandler(new RotatingFileHandler($log_path));
+    if ($log_path) {
+      $this->local_log = new Monolog($app_name);
+      $this->local_log->pushHandler(new RotatingFileHandler($log_path));
+    }
   }
 
   public function warning($msg) {
-    $this->local_log->addWarning($msg);
+    if ($this->localLogAvailable()) {
+      $this->local_log->addWarning($msg);
+    }
   }
 
   public function error($msg) {
-    if ($this->available()) {
+    if ($this->newRelicAvailable()) {
       $this->new_relic->addError($msg);
     }
   }
 
   public function info($msg) {
-    $this->local_log->addInfo($msg);
+    if ($this->localLogAvailable()) {
+      $this->local_log->addInfo($msg);
+    }
   }
 
   public function debug($msg) {
-    $this->local_log->addDebug($msg);
+    if ($this->localLogAvailable()) {
+      $this->local_log->addDebug($msg);
+    }
   }
 
   public function notice($msg) {
-    $this->local_log->addNotice($msg);
+    if ($this->localLogAvailable()) {
+      $this->local_log->addNotice($msg);
+    }
   }
 
   public function critical($msg) {
-    if ($this->available()) {
+    if ($this->newRelicAvailable()) {
       $this->new_relic->addCritical($msg);
     }
   }
 
   public function alert($msg) {
-    if ($this->available()) {
+    if ($this->newRelicAvailable()) {
       $this->new_relic->addAlert($msg);
     }
   }
 
   public function emergency($msg) {
-    if ($this->available()) {
+    if ($this->newRelicAvailable()) {
       $this->new_relic->addEmergency($msg);
     }
   }
 
-  private function available() {
+  private function newRelicAvailable() {
     return $this->new_relic ? true : false;
+  }
+
+  private function localLogAvailable() {
+    return $this->local_log ? true : false;
   }
 
 }
