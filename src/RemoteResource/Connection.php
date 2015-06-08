@@ -112,7 +112,7 @@ class Connection {
      - ($ru_start["ru_$index.tv_sec"]*1000 + intval($ru_start["ru_$index.tv_usec"]/1000));
   }
 
-  private function logRequestData($verb, $path, $resource_usage_start, $resource_usage_end) {
+  private function logRequestResourceUsage($verb, $path, $resource_usage_start, $resource_usage_end) {
     RemoteResource::logger()->debug(
       "Request to {$verb} {$path} took ".$this->resourceUsageTime($resource_usage_start, $resource_usage_end, "utime")."ms in the network\n"
     );
@@ -141,7 +141,7 @@ class Connection {
 
     $resource_usage_end = getrusage();
 
-    $this->logRequestData($verb, $path, $resource_usage_start, $resource_usage_end);
+    $this->logRequestResourceUsage($verb, $path, $resource_usage_start, $resource_usage_end);
 
     if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 400) {
       return $decoded_body;
