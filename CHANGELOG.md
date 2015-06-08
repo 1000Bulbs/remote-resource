@@ -1,5 +1,8 @@
 #Changelog
 
+###[0.2.8] - 2015-06-08
+- [logging] Also logging guzzle exceptions.
+
 ###[0.2.7] - 2015-06-08
 - [logging] Added global logging through monolog out to newrelic. Only activated if newrelic is configured against the application consuming RemoteResource.
 

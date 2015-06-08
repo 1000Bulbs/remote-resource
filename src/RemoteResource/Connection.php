@@ -134,6 +134,7 @@ class Connection {
       $request = $this->client()->createRequest($verb, $path, $this->headers, $body);
       $response = $request->send();
     } catch (\Guzzle\Http\Exception\RequestException $e) {
+      RemoteResource::logger()->alert("Received a Guzzle exception for {$verb}:{$path}");
       throw new Exception\ConnectionError("Guzzle exception: ", $e->getMessage());
     }
 
