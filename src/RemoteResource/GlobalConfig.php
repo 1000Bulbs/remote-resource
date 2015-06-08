@@ -16,7 +16,7 @@ class GlobalConfig {
     self::$app_name = $app_name;
   }
 
-  public static function setLogPath() {
+  public static function setLogPath($log_path) {
     self::$log_path = $log_path;
   }
 }
