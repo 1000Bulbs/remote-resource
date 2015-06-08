@@ -1,6 +1,6 @@
 #Changelog
 
-###[0.2.7] - 2015-05-14
+###[0.2.7] - 2015-06-08
 - [logging] Added global logging through monolog out to newrelic. Only activated if newrelic is configured against the application consuming RemoteResource.
 
 ###[0.2.6] - 2015-05-14
