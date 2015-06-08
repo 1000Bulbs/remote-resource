@@ -140,39 +140,51 @@ class Connection {
       return $decoded_body;
 
     } elseif ($response->getStatusCode() == 400) {
+      RemoteResource::logger()->alert("Received a 400 BadRequest for {$verb}:{$path}");
       throw new Exception\BadRequest($decoded_body);
 
     } elseif ($response->getStatusCode() == 401) {
+      RemoteResource::logger()->alert("Received a 401 UnauthorizedAccess for {$verb}:{$path}");
       throw new Exception\UnauthorizedAccess($decoded_body);
 
     } elseif ($response->getStatusCode() == 403) {
+      RemoteResource::logger()->alert("Received a 403 ForbiddenAccess for {$verb}:{$path}");
       throw new Exception\ForbiddenAccess($decoded_body);
 
     } elseif ($response->getStatusCode() == 404) {
+      RemoteResource::logger()->alert("Received a 404 ResourceNotFound for {$verb}:{$path}");
       throw new Exception\ResourceNotFound($decoded_body);
 
     } elseif ($response->getStatusCode() == 405) {
+      RemoteResource::logger()->alert("Received a 405 MethodNotAllowed for {$verb}:{$path}");
       throw new Exception\MethodNotAllowed($decoded_body);
 
     } elseif ($response->getStatusCode() == 408) {
+      RemoteResource::logger()->alert("Received a 408 RequestTimeout for {$verb}:{$path}");
       throw new Exception\RequestTimeout($decoded_body);
 
     } elseif ($response->getStatusCode() == 409) {
+      RemoteResource::logger()->alert("Received a 409 ResourceConflict for {$verb}:{$path}");
       throw new Exception\ResourceConflict($decoded_body);
 
     } elseif ($response->getStatusCode() == 410) {
+      RemoteResource::logger()->alert("Received a 410 ResourceGone for {$verb}:{$path}");
       throw new Exception\ResourceGone($decoded_body);
 
     } elseif ($response->getStatusCode() == 422) {
+      RemoteResource::logger()->alert("Received a 422 ResourceInvalid for {$verb}:{$path}");
       throw new Exception\ResourceInvalid($decoded_body);
 
     } elseif ($response->getStatusCode() >= 401 && $response->getStatusCode() < 500) {
+      RemoteResource::logger()->alert("Received an {$response->getStatusCode()} Unknown for {$verb}:{$path}");
       throw new Exception\ClientError($decoded_body);
 
     } elseif ($response->getStatusCode() >= 500 && $response->getStatusCode() < 600) {
+      RemoteResource::logger()->alert("Received an {$response->getStatusCode()} Unknown for {$verb}:{$path}");
       throw new Exception\ServerError($decoded_body);
 
     } else {
+      RemoteResource::logger()->error("Received an Unknown Error or response code for {$verb}:{$path}");
       throw new Exception\ConnectionError($decoded_body, "Unknown response code");
     }
   }
