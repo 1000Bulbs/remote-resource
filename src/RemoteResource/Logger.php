@@ -4,68 +4,64 @@ namespace RemoteResource;
 
 use Monolog\Logger as Monolog;
 use Monolog\Handler\NewRelicHandler;
+use Monolog\Handler\RotatingFileHandler;
 
 class Logger {
 
-  private $log;
+  private $new_relic, $local_log;
 
-  public function __construct($app_name) {
+  public function __construct($app_name, $log_path) {
     if (extension_loaded('newrelic')) {
-      $this->log = new Monolog($app_name);
-      $this->log->pushHandler(new NewRelicHandler());
+      $this->new_relic = new Monolog($app_name);
+      $this->new_relic->pushHandler(new NewRelicHandler());
     }
+
+    $this->local_log = new Monolog($app_name);
+    $this->local_log->pushHandler(new RotatingFileHandler($log_path));
   }
 
   public function warning($msg) {
-    if ($this->available()) {
-      $this->log->addWarning($msg);
-    }
+    $this->local_log->addWarning($msg);
   }
 
   public function error($msg) {
     if ($this->available()) {
-      $this->log->addError($msg);
+      $this->new_relic->addError($msg);
     }
   }
 
   public function info($msg) {
-    if ($this->available()) {
-      $this->log->addInfo($msg);
-    }
+    $this->local_log->addInfo($msg);
   }
 
   public function debug($msg) {
-    if ($this->available()) {
-      $this->log->addDebug($msg);
-    }
+    $this->local_log->addDebug($msg);
   }
 
   public function notice($msg) {
-    if ($this->available()) {
-      $this->log->addNotice($msg);
-    }
+    $this->local_log->addNotice($msg);
   }
 
   public function critical($msg) {
     if ($this->available()) {
-      $this->log->addCritical($msg);
+      $this->new_relic->addCritical($msg);
     }
   }
 
   public function alert($msg) {
     if ($this->available()) {
-      $this->log->addAlert($msg);
+      $this->new_relic->addAlert($msg);
     }
   }
 
   public function emergency($msg) {
     if ($this->available()) {
-      $this->log->addEmergency($msg);
+      $this->new_relic->addEmergency($msg);
     }
   }
 
   private function available() {
-    return $this->log ? true : false;
+    return $this->new_relic ? true : false;
   }
 
 }
