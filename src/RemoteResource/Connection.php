@@ -96,6 +96,18 @@ class Connection {
     $this->client = $client;
   }
 
+  /**
+   * @todo Add this to a helper class or utility class somewhere, wrap the timer call in sendRequest in a "debug" config option
+   * @param  [type] $ru    [description]
+   * @param  [type] $rus   [description]
+   * @param  [type] $index [description]
+   * @return [type]        [description]
+   */
+  private function rutime($ru, $rus, $index) {
+    return ($ru["ru_$index.tv_sec"]*1000 + intval($ru["ru_$index.tv_usec"]/1000))
+     - ($rus["ru_$index.tv_sec"]*1000 + intval($rus["ru_$index.tv_usec"]/1000));
+  }
+
   // ----------------------------
   // _____ PRIVATE METHODS ______
   // ____________________________
@@ -110,6 +122,8 @@ class Connection {
    * @throws RemoteResource\Exception corresponds to HTTP status returned
    */
   private function sendRequest($verb, $path, $body = null) {
+    $rustart = getrusage();
+
     try {
       $request = $this->client()->createRequest($verb, $path, $this->headers, $body);
       $response = $request->send();
@@ -118,6 +132,9 @@ class Connection {
     }
 
     $decoded_body = $this->formatter->formatResponse( $response->getBody() );
+
+    $ru = getrusage();
+    RemoteResource::logger()->debug("Request to {$verb} {$path} took ".$this->rutime($ru, $rustart, "utime")."ms in the network\n");
 
     if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 400) {
       return $decoded_body;
