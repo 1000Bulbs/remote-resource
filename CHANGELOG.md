@@ -1,5 +1,8 @@
 #Changelog
 
+###[0.2.7] - 2015-05-14
+- [logging] Added global logging through monolog out to newrelic. Only activated if newrelic is configured against the application consuming RemoteResource.
+
 ###[0.2.6] - 2015-05-14
 - [bug] Connection headers were not being transformed into a map. This meant that the Guzzle Client wasnt able to process the headers properly.
 

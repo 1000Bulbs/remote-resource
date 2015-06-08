@@ -237,6 +237,9 @@ $product_image->patch("increment");
 $product_image->delete("associated");
 ```
 
+### Logging
+Global logging through New Relic will be activated if new relic is configured against the application consuming RemoteResource.
+
 ### Changelog
 
 View the [CHANGELOG.md](CHANGELOG.md "CHANGELOG.md")
