@@ -65,11 +65,7 @@ class Logger {
   }
 
   private function available() {
-    if (!isset($this->log) || !$this->log) {
-      return false;
-    }
-
-    return true;
+    return $this->log ? true : false;
   }
 
 }
