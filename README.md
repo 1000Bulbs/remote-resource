@@ -240,6 +240,9 @@ $product_image->delete("associated");
 ### Logging
 Global logging through New Relic will be activated if new relic is configured against the application consuming RemoteResource.
 
+### Global Config
+TODO: info on Global Config here
+
 ### Changelog
 
 View the [CHANGELOG.md](CHANGELOG.md "CHANGELOG.md")

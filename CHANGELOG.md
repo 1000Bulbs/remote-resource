@@ -1,5 +1,9 @@
 #Changelog
 
+###[0.2.9] - 2015-06-08
+- [logging] Non-error logging now logs to the server.
+- [feature] Global Configuration options now settable: app_name, log_path
+
 ###[0.2.8] - 2015-06-08
 - [logging] Also logging guzzle exceptions.
 
