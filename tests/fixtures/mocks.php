@@ -1,4 +1,5 @@
 <?php
+
 class MockResponse {
   public $status_code, $body;
 

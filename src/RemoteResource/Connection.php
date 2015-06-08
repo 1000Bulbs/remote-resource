@@ -110,8 +110,12 @@ class Connection {
    * @throws RemoteResource\Exception corresponds to HTTP status returned
    */
   private function sendRequest($verb, $path, $body = null) {
-    $request = $this->client()->createRequest($verb, $path, $this->headers, $body);
-    $response = $request->send();
+    try {
+      $request = $this->client()->createRequest($verb, $path, $this->headers, $body);
+      $response = $request->send();
+    } catch (\Guzzle\Http\Exception\RequestException $e) {
+      throw new Exception\ConnectionError("Guzzle exception: ", $e->getMessage());
+    }
 
     $decoded_body = $this->formatter->formatResponse( $response->getBody() );
 
