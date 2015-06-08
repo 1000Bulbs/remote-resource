@@ -8,6 +8,7 @@ use RemoteResource\Config;
 use RemoteResource\Pool\ConfigPool;
 use RemoteResource\Pool\ConnectionPool;
 use RemoteResource\Logger;
+use RemoteResource\GlobalConfig;
 
 use Doctrine\Common\Inflector\Inflector;
 
@@ -36,7 +37,7 @@ class RemoteResource {
    */
   public static function logger() {
     if (!self::$logger) {
-      self::$logger = new Logger('remote-resource');
+      self::$logger = new Logger(GlobalConfig::appName(), GlobalConfig::logPath());
     }
 
     return self::$logger;
