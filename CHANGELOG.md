@@ -1,5 +1,8 @@
 #Changelog
 
+###[0.2.13] - 2015-10-08
+- guzzle replaced with Requests
+
 ###[0.2.12] - 2015-10-08
 - set CURLOPT_FORBID_REUSE to 1. This will force connections to be closed once processing of a request is completed. Might help avoid over pooling. http://curl.haxx.se/libcurl/c/CURLOPT_FORBID_REUSE.html
 
