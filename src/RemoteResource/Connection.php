@@ -17,7 +17,11 @@ use RemoteResource\Exception\ConnectionError;
 use RemoteResource\Exception\RequestTimeout;
 use RemoteResource\Connection\Request;
 
-use Guzzle\Http\Client;
+class Client {
+  public function request($url, $headers, $body=null, $verb) {
+    return \Requests::request($url, $headers, $body, $verb);
+  }
+}
 
 /**
  * The connection class sits on top of the (usually) Guzzle HTTP client and
@@ -81,8 +85,6 @@ class Connection {
   public function client() {
     if (!$this->client) {
       $client = new Client;
-      $client->getConfig()->set('curl.options', array(CURLOPT_TCP_NODELAY => 1, CURLOPT_FORBID_REUSE => 1));
-      $client->setDefaultOption('exceptions', false);
       $this->client = $client;
     }
 
@@ -102,24 +104,6 @@ class Connection {
   // ____________________________
 
   /**
-   * @todo Add this to a helper class or utility class somewhere, wrap the timer call in sendRequest in a "debug" config option
-   * @param  [type] $ru_start  [description]
-   * @param  [type] $ru_end    [description]
-   * @param  [type] $index     [description]
-   * @return [type]            [description]
-   */
-  private function resourceUsageTime($ru_start, $ru_end, $index) {
-    return ($ru_end["ru_$index.tv_sec"]*1000 + intval($ru_end["ru_$index.tv_usec"]/1000))
-     - ($ru_start["ru_$index.tv_sec"]*1000 + intval($ru_start["ru_$index.tv_usec"]/1000));
-  }
-
-  private function logRequestResourceUsage($verb, $path, $resource_usage_start, $resource_usage_end) {
-    RemoteResource::logger()->debug(
-      "Request to {$verb} {$path} took ".$this->resourceUsageTime($resource_usage_start, $resource_usage_end, "utime")."ms in the network\n"
-    );
-  }
-
-  /**
    * Sends the request via guzzle and returns the needed parts of the response, or throws an
    * exception.
    * @param  string $verb HTTP verb: GET, POST, PUT, PATCH, DELETE, etc.
@@ -129,71 +113,47 @@ class Connection {
    * @throws RemoteResource\Exception corresponds to HTTP status returned
    */
   private function sendRequest($verb, $path, $body = null) {
-    $resource_usage_start = getrusage();
+    $encoded_body = $this->formatter->formatRequest( $body );
+    $response = $this->client()->request($path, $this->headers, $encoded_body, $verb);
+    $decoded_body = $this->formatter->formatResponse( $response->body );
 
-    try {
-      $request = $this->client()->createRequest($verb, $path, $this->headers, $body);
-      $response = $request->send();
-    } catch (\Guzzle\Http\Exception\RequestException $e) {
-      RemoteResource::logger()->alert("Received a Guzzle exception for {$verb}:{$path}");
-      throw new Exception\ConnectionError("Guzzle exception: ", $e->getMessage());
-    }
-
-    $decoded_body = $this->formatter->formatResponse( $response->getBody() );
-
-    $resource_usage_end = getrusage();
-
-    $this->logRequestResourceUsage($verb, $path, $resource_usage_start, $resource_usage_end);
-
-    if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 400) {
+    if ($response->status_code >= 200 && $response->status_code < 400) {
       return $decoded_body;
-
-    } elseif ($response->getStatusCode() == 400) {
-      RemoteResource::logger()->alert("Received a 400 BadRequest for {$verb}:{$path}");
+    }
+    elseif ($response->status_code == 400) {
       throw new Exception\BadRequest($decoded_body);
 
-    } elseif ($response->getStatusCode() == 401) {
-      RemoteResource::logger()->alert("Received a 401 UnauthorizedAccess for {$verb}:{$path}");
+    } elseif ($response->status_code == 401) {
       throw new Exception\UnauthorizedAccess($decoded_body);
 
-    } elseif ($response->getStatusCode() == 403) {
-      RemoteResource::logger()->alert("Received a 403 ForbiddenAccess for {$verb}:{$path}");
+    } elseif ($response->status_code == 403) {
       throw new Exception\ForbiddenAccess($decoded_body);
 
-    } elseif ($response->getStatusCode() == 404) {
-      RemoteResource::logger()->alert("Received a 404 ResourceNotFound for {$verb}:{$path}");
+    } elseif ($response->status_code == 404) {
       throw new Exception\ResourceNotFound($decoded_body);
 
-    } elseif ($response->getStatusCode() == 405) {
-      RemoteResource::logger()->alert("Received a 405 MethodNotAllowed for {$verb}:{$path}");
+    } elseif ($response->status_code == 405) {
       throw new Exception\MethodNotAllowed($decoded_body);
 
-    } elseif ($response->getStatusCode() == 408) {
-      RemoteResource::logger()->alert("Received a 408 RequestTimeout for {$verb}:{$path}");
+    } elseif ($response->status_code == 408) {
       throw new Exception\RequestTimeout($decoded_body);
 
-    } elseif ($response->getStatusCode() == 409) {
-      RemoteResource::logger()->alert("Received a 409 ResourceConflict for {$verb}:{$path}");
+    } elseif ($response->status_code == 409) {
       throw new Exception\ResourceConflict($decoded_body);
 
-    } elseif ($response->getStatusCode() == 410) {
-      RemoteResource::logger()->alert("Received a 410 ResourceGone for {$verb}:{$path}");
+    } elseif ($response->status_code == 410) {
       throw new Exception\ResourceGone($decoded_body);
 
-    } elseif ($response->getStatusCode() == 422) {
-      RemoteResource::logger()->alert("Received a 422 ResourceInvalid for {$verb}:{$path}");
+    } elseif ($response->status_code == 422) {
       throw new Exception\ResourceInvalid($decoded_body);
 
-    } elseif ($response->getStatusCode() >= 401 && $response->getStatusCode() < 500) {
-      RemoteResource::logger()->alert("Received an {$response->getStatusCode()} Unknown for {$verb}:{$path}");
+    } elseif ($response->status_code >= 401 && $response->status_code < 500) {
       throw new Exception\ClientError($decoded_body);
 
-    } elseif ($response->getStatusCode() >= 500 && $response->getStatusCode() < 600) {
-      RemoteResource::logger()->alert("Received an {$response->getStatusCode()} Unknown for {$verb}:{$path}");
+    } elseif ($response->status_code >= 500 && $response->status_code < 600) {
       throw new Exception\ServerError($decoded_body);
 
     } else {
-      RemoteResource::logger()->error("Received an Unknown Error or response code for {$verb}:{$path}");
       throw new Exception\ConnectionError($decoded_body, "Unknown response code");
     }
   }
