@@ -7,8 +7,8 @@ class StaticPage extends RemoteResource\RemoteResource {
   public static $site = "http://localhost:3001/api/static_pages";
   public static $resource_name = 'page';
   public static $format = 'json';
-  public static $auth_type = 'basic';
-  public static $credentials = 'foo:bar';
+  public static $auth_type = 'api_key';
+  public static $credentials = '1234ASDF1234ASDF1234ASDF1234ASDF';
 }
 
 class Brand extends RemoteResource\RemoteResource {
@@ -57,12 +57,12 @@ class RemoteResourceTest extends PHPUnit_Framework_TestCase {
 
     // auth types
     $this->assertEquals(ProductImage::config()->authType(), 'none');
-    $this->assertEquals(StaticPage::config()->authType(), 'basic');
+    $this->assertEquals(StaticPage::config()->authType(), 'api_key');
     $this->assertEquals(Brand::config()->authType(), 'basic');
 
     // credentials
     $this->assertEquals(ProductImage::config()->credentials(), null);
-    $this->assertEquals(StaticPage::config()->credentials(), 'Basic '.base64_encode('foo:bar'));
+    $this->assertEquals(StaticPage::config()->credentials(), '1234ASDF1234ASDF1234ASDF1234ASDF');
     $this->assertEquals(Brand::config()->credentials(), 'Basic '.base64_encode('user:password'));
   }
 

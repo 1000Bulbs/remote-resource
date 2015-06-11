@@ -10,7 +10,7 @@ class Config {
           $format, 
           $formatter, 
           $headers,
-          $supported_auth_types = array('basic', 'none'),
+          $supported_auth_types = array('basic', 'none', 'api_key'),
           $supported_formats    = array('json'),
           $default_auth_type    = 'none',
           $default_format       = 'json';
@@ -131,6 +131,8 @@ class Config {
 
     if ($this->authType() == 'basic') {
       $headers->add( new Header('Authorization', $this->credentials()) );
+    } elseif ($this->authType() == 'api_key') {
+      $headers->add( new Header('X-API-KEY', $this->credentials()) );
     }
 
     $this->headers = $headers;
