@@ -1,8 +1,8 @@
 {
   "name": "remote-resource/remote-resource",
   "require": {
+    "guzzlehttp/guzzle": "3.7.3",
     "doctrine/inflector": "1.0.1",
-    "rmccue/requests": ">=1.0",
     "monolog/monolog": "~1.13.1"
   },
   "require-dev": {
