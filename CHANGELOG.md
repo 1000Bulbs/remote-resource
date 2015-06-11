@@ -1,8 +1,5 @@
 #Changelog
 
-###[0.2.11] - 2015-10-08
-- set CURLOPT_TCP_NODELAY to 1. This should allow small packets to process quickly. http://curl.haxx.se/libcurl/c/CURLOPT_TCP_NODELAY.html
-
 ###[0.2.10] - 2015-06-08
 - [bug] GlobalConfig setLogPath takes log_path param
 
