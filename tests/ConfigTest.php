@@ -17,6 +17,13 @@ class ConfigTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($config->credentials(), 'Basic '.base64_encode('name:password'));
   }
 
+  public function testAuthType_apiKey() {
+    $config = new RemoteResource\Config(null, 'api_key', '1234ASDF1234ASDF1234ASDF1234ASDF');
+
+    $this->assertEquals($config->authType(), 'api_key');
+    $this->assertEquals($config->credentials(), '1234ASDF1234ASDF1234ASDF1234ASDF');
+  }
+
   public function testAuthType_default() {
     $config = new RemoteResource\Config();
 

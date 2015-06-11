@@ -1,5 +1,8 @@
 #Changelog
 
+###[0.3.0] - 2015-06-11
+- [feature] Add api_key auth type
+
 ###[0.2.10] - 2015-06-08
 - [bug] GlobalConfig setLogPath takes log_path param
 
