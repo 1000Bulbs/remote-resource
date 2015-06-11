@@ -81,7 +81,6 @@ class Connection {
   public function client() {
     if (!$this->client) {
       $client = new Client;
-      $client->getConfig()->set('curl.options', array(CURLOPT_TCP_NODELAY => 1));
       $client->setDefaultOption('exceptions', false);
       $this->client = $client;
     }
