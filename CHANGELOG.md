@@ -1,5 +1,8 @@
 #Changelog
 
+###[0.3.1] - 2015-07-01
+- explicitly set permissions on log files
+
 ###[0.3.0] - 2015-06-11
 - [feature] Add api_key auth type
 

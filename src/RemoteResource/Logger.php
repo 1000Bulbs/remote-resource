@@ -18,7 +18,7 @@ class Logger {
 
     if ($log_path) {
       $this->local_log = new Monolog($app_name);
-      $this->local_log->pushHandler(new RotatingFileHandler($log_path));
+      $this->local_log->pushHandler(new RotatingFileHandler($log_path, 0, Monolog::DEBUG, true, 0777));
     }
   }
 
